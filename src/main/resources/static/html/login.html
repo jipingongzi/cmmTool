@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+
+  <!-- Bootstrap CSS and JavaScript via CDN -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1LG2oy3LO/2q1HY2ag5cu2vhY2ANGamPzX2ANT" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js" integrity="sha384-veszVryoRNA4EgFXG-1HLgFkM_Tv7HamyW/331GR7fCraWydJ8oqI5yvsi7aJ/rpr" crossorigin="anonymous"></script>
+
+  <!-- jQuery via CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <style>
+  body {
+    background-color: #1e1e4a;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-container {
+    max-width: 400px;
+    padding: 30px 20px;
+    background-color: #1e1e4a;
+    border-radius: 5px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    color: #fff;
+  }
+
+  .form-label {
+    color: #fff;
+    font-size:1.2rem;
+  }
+
+  .submit-btn {
+    background-color: #3740a0;
+    border-color: #3740a0;
+    color: white;
+    font-weight: bold;
+  }
+
+  .submit-btn:hover {
+    background-color: #4a52c1;
+    border-color: #4a52c1;
+  }
+
+  input.form-control {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 1.3rem;
+    padding: 0.8rem;
+  }
+
+  input.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(255,255,255, 0.25);
+  }
+
+  .form-check-label {
+    color: #fff;
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="login-container">
+  <h2 class="mb-4 text-center">登陆</h2>
+    <div class="mb-3">
+      <label for="email" class="form-label">登陆账户: </label>
+      <input type="email" class="form-control" id="email" placeholder="Enter email">
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">登陆密码: </label>
+      <input type="password" class="form-control" id="password" placeholder="Enter password">
+    </div>
+    <div class="text-center">
+      <button type="submit-btn" class="btn submit-btn">登陆</button>
+    </div>
+</div>
+</body>
+</html>
