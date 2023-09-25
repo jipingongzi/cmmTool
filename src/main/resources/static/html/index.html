@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webpage with Left Menu</title>
+
+    <!-- Bootstrap CSS and JavaScript via CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1LG2oy3LO/2q1HY2ag5cu2vhY2ANGamPzX2ANT" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js" integrity="sha384-veszVryoRNA4EgFXG-1HLgFkM_Tv7HamyW/331GR7fCraWydJ8oqI5yvsi7aJ/rpr" crossorigin="anonymous"></script>
+
+    <!-- jQuery via CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+  /* CSS styles */
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .main {
+    display: flex;
+    flex: 1;
+  }
+
+  .sidebar {
+    background-color: #1e1e4a;
+    width: 200px;
+    padding: 1rem 0;
+  }
+
+  .sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .sidebar a:hover {
+    background-color: #38386d;
+  }
+
+  .content {
+    flex: 1;
+    padding: 1rem;
+  }
+
+  footer {
+    background-color: #1e1e4a;
+    color: white;
+    text-align: center;
+    padding: 15px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="main">
+        <div class="sidebar">
+            <a href="#" class="btn btn-block btn-dark mb-2" id="loadPage1">Menu Item 1</a>
+            <a href="#" class="btn btn-block btn-dark mb-2" id="loadPage2">Menu Item 2</a>
+            <a href="#" class="btn btn-block btn-dark mb-2" id="loadPage3">Menu Item 3</a>
+        </div>
+        <div class="content" id="content">
+        </div>
+    </div>
+    <footer>
+        &copy;2022 - All rights reserved.
+    </footer>
+</div>
+
+<script>
+    // JavaScript code to handle the menu clicks
+    $(document).ready(function () {
+      $("#loadPage1").click(function (event) {
+        event.preventDefault();
+        $("#content").load("1.html");
+      });
+
+      $("#loadPage2").click(function (event) {
+        event.preventDefault();
+        $("#content").html(`<h1>Page 2</h1>
+                              <p>Welcome to the content of menu item 2.</p>`);
+      });
+
+      $("#loadPage3").click(function (event) {
+        event.preventDefault();
+        $("#content").html(`<h1>Page 3</h1>
+                              <p>Welcome to the content of menu item 3.</p>`);
+      });
+
+    });
+  </script>
+</body>
+</html>
