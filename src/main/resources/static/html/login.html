@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
-
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <!-- Bootstrap CSS and JavaScript via CDN -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1LG2oy3LO/2q1HY2ag5cu2vhY2ANGamPzX2ANT" crossorigin="anonymous">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js" integrity="sha384-veszVryoRNA4EgFXG-1HLgFkM_Tv7HamyW/331GR7fCraWydJ8oqI5yvsi7aJ/rpr" crossorigin="anonymous"></script>
@@ -70,19 +70,21 @@
 </style>
 </head>
 <body>
-<div class="login-container">
-  <h2 class="mb-4 text-center">登陆</h2>
-    <div class="mb-3">
-      <label for="email" class="form-label">登陆账户: </label>
-      <input type="email" class="form-control" id="email" placeholder="Enter email">
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">登陆密码: </label>
-      <input type="password" class="form-control" id="password" placeholder="Enter password">
-    </div>
-    <div class="text-center">
-      <button type="submit-btn" class="btn submit-btn">登陆</button>
-    </div>
+<div>
+  <h1 align="center" style="color:white">CMM OA Tool</h1>
+  <div class="login-container">
+      <div class="mb-3" style="text-align:center">
+        <label for="email" class="form-label">登录账户: </label>
+        <input type="email" class="form-control" id="email" placeholder="用户名">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">登录密码: </label>
+        <input type="password" class="form-control" id="password" placeholder="密码">
+      </div>
+      <div class="text-center">
+        <button type="submit-btn" style="width:100%;height:50px;font-size:20px;border-radius:5%" class="btn submit-btn">登录</button>
+      </div>
+  </div>
 </div>
 </body>
 </html>
