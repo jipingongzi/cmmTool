@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -47,7 +48,7 @@ public class CertificateRestApi {
     @PostMapping("/excel")
     public JSONObject insert(@RequestParam("files") MultipartFile[] files) {
         JSONObject response = new JSONObject();
-        String message = "";
+        String message;
         int apiStatus = 0;
         try {
             MultipartFile file = files[0];
@@ -86,18 +87,18 @@ public class CertificateRestApi {
      * @param files list,bank
      */
     @PostMapping("/merge")
-    public JSONObject merge(@RequestParam("files") MultipartFile[] files, HttpServletResponse httpResponse) throws IOException {
+    public JSONObject merge(@RequestParam("files") MultipartFile[] files) throws IOException {
         int apiStatus = 0;
         if (files.length != 2) {
            throw new RuntimeException("文件数量错误");
         } else {
             MultipartFile listFile = null;
             MultipartFile bankFile = null;
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].getOriginalFilename().contains("list")) {
-                    listFile = files[i];
-                } else if (files[i].getOriginalFilename().contains("bank")) {
-                    bankFile = files[i];
+            for (MultipartFile file : files) {
+                if (file.getOriginalFilename().contains("list")) {
+                    listFile = file;
+                } else if (file.getOriginalFilename().contains("bank")) {
+                    bankFile = file;
                 } else {
                     throw new RuntimeException("文件命名错误");
                 }
@@ -126,7 +127,7 @@ public class CertificateRestApi {
     }
 
     private List<CertificateResultDto> convertFile2Dto(MultipartFile file) throws IOException {
-        Workbook wb = null;
+        Workbook wb;
         // 当excel是2007时,创建excel2007
         if (file.getOriginalFilename().contains("xlsx")) {
             wb = new XSSFWorkbook(file.getInputStream());
@@ -143,14 +144,13 @@ public class CertificateRestApi {
         Map<String,BigDecimal> manuallyTestMap = convertSheet2CertificateManuallyTestMap(wb.getSheetAt(3));
         List<CertificateResultDto> resultDtoList = new ArrayList<>();
 
-        for (int i = 0; i < theoryTestDtoList.size(); i++) {
-            CertificateTheoryTestDto theoryTestDto = theoryTestDtoList.get(i);
+        for (CertificateTheoryTestDto theoryTestDto : theoryTestDtoList) {
             String userIdNo = theoryTestDto.getUserIdNo();
-            if(completeRateMap.containsKey(userIdNo) && practiceTestMap.containsKey(userIdNo) && manuallyTestMap.containsKey(userIdNo)){
+            if (completeRateMap.containsKey(userIdNo) && practiceTestMap.containsKey(userIdNo) && manuallyTestMap.containsKey(userIdNo)) {
                 CertificateResultDto resultDto = new CertificateResultDto(userIdNo,
-                        theoryTestDto.getUserName(), theoryTestDto.getBankInfo(),theoryTestDto.getArea(),
-                        theoryTestDto.getExamStartTime(),theoryTestDto.getExamSuccessTime(),
-                        completeRateMap.get(userIdNo),practiceTestMap.get(userIdNo),manuallyTestMap.get(userIdNo),
+                        theoryTestDto.getUserName(), theoryTestDto.getBankInfo(), theoryTestDto.getArea(),
+                        theoryTestDto.getExamStartTime(), theoryTestDto.getExamSuccessTime(),
+                        completeRateMap.get(userIdNo), practiceTestMap.get(userIdNo), manuallyTestMap.get(userIdNo),
                         theoryTestDto.getScore());
                 resultDtoList.add(resultDto);
             }
@@ -163,7 +163,7 @@ public class CertificateRestApi {
             Row row = sheet.getRow(i);
             map.put(
                     row.getCell(2).getStringCellValue(),
-                    BigDecimal.valueOf(row.getCell(5).getNumericCellValue()).setScale(2,BigDecimal.ROUND_DOWN));
+                    BigDecimal.valueOf(row.getCell(5).getNumericCellValue()).setScale(2, RoundingMode.DOWN));
         }
         return map;
     }
@@ -173,7 +173,7 @@ public class CertificateRestApi {
             Row row = sheet.getRow(i);
             map.put(
                     row.getCell(2).getStringCellValue(),
-                    BigDecimal.valueOf(row.getCell(4).getNumericCellValue()).setScale(2,BigDecimal.ROUND_DOWN));
+                    BigDecimal.valueOf(row.getCell(4).getNumericCellValue()).setScale(2, RoundingMode.DOWN));
         }
         return map;
     }
@@ -188,7 +188,7 @@ public class CertificateRestApi {
                     row.getCell(5).getStringCellValue(),
                     row.getCell(7).getStringCellValue(),
               Double.valueOf(row.getCell(8).getNumericCellValue()).intValue() + "",
-                    BigDecimal.valueOf(row.getCell(6).getNumericCellValue()).setScale(2,BigDecimal.ROUND_DOWN));
+                    BigDecimal.valueOf(row.getCell(6).getNumericCellValue()).setScale(2, RoundingMode.DOWN));
             certificateTheoryTestDtoArrayList.add(certificateTheoryTestDto);
         }
         return certificateTheoryTestDtoArrayList;
@@ -199,7 +199,7 @@ public class CertificateRestApi {
             Row row = sheet.getRow(i);
             map.put(
                     row.getCell(2).getStringCellValue(),
-                    BigDecimal.valueOf(row.getCell(6).getNumericCellValue()).setScale(2,BigDecimal.ROUND_DOWN));
+                    BigDecimal.valueOf(row.getCell(6).getNumericCellValue()).setScale(2, RoundingMode.DOWN));
         }
         return map;
     }
@@ -236,9 +236,8 @@ public class CertificateRestApi {
             String group = row.getCell(2).getStringCellValue();
             String studyProcess = row.getCell(3).getNumericCellValue()+"";
 
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
             double value = row.getCell(4).getNumericCellValue();
-            String studyTime = convertSecondsToHMmSs(new Double(value * 24 * 60 * 60).longValue());
+            String studyTime = convertSecondsToHMmSs((BigDecimal.valueOf(value * 24 * 60 * 60).longValue()));
             System.out.println();
 
             String studyCourse = row.getCell(5).getStringCellValue();
@@ -264,7 +263,7 @@ public class CertificateRestApi {
     }
 
     private Workbook getWorkbook(MultipartFile file) throws IOException {
-        Workbook book = null;
+        Workbook book;
         if (file.getOriginalFilename().contains("xlsx")) {
             book = new XSSFWorkbook(file.getInputStream());
         } else {
