@@ -1,7 +1,8 @@
 package com.sean.cmm.api;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.sean.cmm.dto.*;
+import com.sean.cmm.jpa.entity.CertificateEntity;
 import com.sean.cmm.service.CertificateQueryService;
 import com.sean.cmm.service.CertificateService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -115,7 +116,7 @@ public class CertificateRestApi {
             byte[] bytes = bos.toByteArray();
             InputStream in = new ByteArrayInputStream(bytes);
             String fileName = "study-merge.xlsx";
-            OssUtil.uploadFile("tool-file",fileName,in);
+//            OssUtil.uploadFile("tool-file",fileName,in);
 
             JSONObject r = new JSONObject();
             r.put("dir","https://tool-file.oss-cn-chengdu.aliyuncs.com/" + fileName);
