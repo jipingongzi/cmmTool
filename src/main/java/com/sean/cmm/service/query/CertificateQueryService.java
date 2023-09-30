@@ -1,4 +1,4 @@
-package com.sean.cmm.service;
+package com.sean.cmm.service.query;
 
 import com.sean.cmm.jpa.entity.CertificateEntity;
 import com.sean.cmm.jpa.entity.CertificateExamEntity;
