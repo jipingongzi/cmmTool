@@ -19,7 +19,7 @@ import javafx.util.Duration;
 
 public class StreamingPlayer extends Application {
 
-    private static final String MEDIA_URL = "https://trainning-video.oss-cn-chengdu.aliyuncs.com/2021041709/00M21S_1618621221.mp4?Expires=1696063062&OSSAccessKeyId=TMP.3KdZgqKRGCUijxCeeyeA5QuvmByEdb1r6McsGdULzebRiYWyCmZkRqCxQyRH6zqAwTdR37FheSHSBiKPDVPDvSoPFBYzpA&Signature=Hv%2FxqMRTdNgAAQjqn1ym%2Fq32k8w%3D";
+    private static final String MEDIA_URL = "https://cours-video.oss-cn-hangzhou.aliyuncs.com/1.1%20%E4%BA%BA%E6%B0%91%E5%B8%81%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86.mp4";
     private MediaPlayer mediaPlayer;
     private ProgressBar progressBar;
     private Label progressLabel;
@@ -36,7 +36,6 @@ public class StreamingPlayer extends Application {
         Media media = new Media(MEDIA_URL);
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setAutoPlay(true);
-        mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
         mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> updateProgress());
         mediaPlayer.bufferProgressTimeProperty().addListener((observable, oldValue, newValue) -> updateProgress());
 
@@ -95,21 +94,24 @@ public class StreamingPlayer extends Application {
         videoBox.getChildren().addAll(mediaView, controls);
 
         // Set up and show the scene.
-        Scene scene = new Scene(videoBox, 800, 450);
+        Scene scene = new Scene(videoBox, 800, 550);
         primaryStage.setTitle("Sean Player");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     private void updateProgress() {
-        Duration bufferEnd = mediaPlayer.getBufferProgressTime();
+        Duration currentTime = mediaPlayer.getCurrentTime();
         Duration mediaDuration = mediaPlayer.getMedia().getDuration();
-        double progress = bufferEnd.toMillis() / mediaDuration.toMillis();
+        double progress = currentTime.toMillis() / mediaDuration.toMillis();
         progressProperty.set(progress);
 
-        Duration currentTime = mediaPlayer.getCurrentTime();
         String formattedCurrentTime = String.format("%02d:%02d", (int) currentTime.toMinutes(), (int) currentTime.toSeconds() % 60);
         String formattedTotalTime = String.format("%02d:%02d", (int) mediaDuration.toMinutes(), (int) mediaDuration.toSeconds() % 60);
         timeLabel.setText(formattedCurrentTime + " / " + formattedTotalTime);
+
+        if (currentTime.equals(mediaDuration)) {
+            mediaPlayer.seek(Duration.ZERO);
+        }
     }
 }
