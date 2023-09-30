@@ -1,10 +1,10 @@
 package com.sean.cmm.jpa.entity;
 
-import com.xc.software.common.EntityStatusEnum;
+import com.sean.cmm.constant.EntityStatusEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
