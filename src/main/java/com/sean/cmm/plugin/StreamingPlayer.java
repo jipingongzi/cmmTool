@@ -19,7 +19,7 @@ import javafx.util.Duration;
 
 public class StreamingPlayer extends Application {
 
-    private static final String MEDIA_URL = "https://video3.vod.tv.itc.cn/ETUldzUBljmCuoLrCTmviTUOxkwqT9fOskv5HO3DSxi50tmJUxkoytHrChRYAtixIWY.mp4";
+    private static final String MEDIA_URL = "https://trainning-video.oss-cn-chengdu.aliyuncs.com/2021041709/00M21S_1618621221.mp4?Expires=1696063062&OSSAccessKeyId=TMP.3KdZgqKRGCUijxCeeyeA5QuvmByEdb1r6McsGdULzebRiYWyCmZkRqCxQyRH6zqAwTdR37FheSHSBiKPDVPDvSoPFBYzpA&Signature=Hv%2FxqMRTdNgAAQjqn1ym%2Fq32k8w%3D";
     private MediaPlayer mediaPlayer;
     private ProgressBar progressBar;
     private Label progressLabel;

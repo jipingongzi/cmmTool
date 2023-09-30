@@ -1,6 +1,6 @@
 package com.sean.cmm.jpa.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
