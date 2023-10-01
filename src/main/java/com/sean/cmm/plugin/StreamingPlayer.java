@@ -19,13 +19,18 @@ import javafx.util.Duration;
 
 public class StreamingPlayer extends Application {
 
-    private static final String MEDIA_URL = "https://cours-video.oss-cn-hangzhou.aliyuncs.com/1.1%20%E4%BA%BA%E6%B0%91%E5%B8%81%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86.mp4";
+    private String MEDIA_URL = "https://cours-video.oss-cn-hangzhou.aliyuncs.com/1.1%20%E4%BA%BA%E6%B0%91%E5%B8%81%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86.mp4";
     private MediaPlayer mediaPlayer;
     private ProgressBar progressBar;
     private Label progressLabel;
     private Label timeLabel;
     private DoubleProperty progressProperty = new SimpleDoubleProperty(0);
     private Tooltip progressTooltip;
+
+
+    public StreamingPlayer(final String url){
+        MEDIA_URL = url;
+    }
 
     public static void main(String[] args) {
         launch(args);
