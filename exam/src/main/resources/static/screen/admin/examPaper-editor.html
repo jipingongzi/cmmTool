@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <style>
+        .optionForm{
+
+        }
+        .optionDiv{
+            margin-top:10px;margin-bottom: 10px
+        }
+        .question{
+            margin: 10px;
+            margin-left: 20%;
+            border:1px solid #ccc;
+            padding: 10px;
+        }
+        .targetarea{
+            height:550px;
+            overflow-scrolling: auto;
+        }
+        .proxy{
+            border:1px solid #ccc;
+            width:80px;
+            background:#fafafa;
+        }
+    </style>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body id="paperBody">
+<div>
+    <div class="easyui-panel" title="基本信息">
+        <div style="text-align: center">
+            <select class="easyui-combobox" name="language" style="width: 30%" id="batchs" data-options="prompt:'问卷批次'">
+            </select>
+            <input class="easyui-textbox" style="width:50%;height:32px" data-options="prompt:'问卷名称'"
+                   id="title"/>
+            <div style="margin-top: 10px;margin-bottom: 10px">
+                <input id = "description" class="easyui-textbox" data-options="multiline:true,prompt:'问卷描述'"
+                   style="display:block;width:80%;height:70px"/>
+            </div>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="savePaper(this)" iconCls="icon-save"
+               style="margin-bottom: 10px">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clear()" iconCls="icon-cancel" style="margin-bottom: 10px">重置</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="preview()" iconCls="icon-print" style="margin-bottom: 10px">预览</a>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="easyui-panel" title="题目编辑">
+        <div style="float:left;width:75%" id="questionList">
+        </div>
+    </div>
+</div>
+
+<div id="mm" class="easyui-menu">
+    <div onclick="addQuestion(1)">主观题</div>
+    <div onclick="addQuestion(2)">判断题</div>
+    <div onclick="addQuestion(3)">单选题</div>
+    <div onclick="addQuestion(4)">多选题</div>
+    <div onclick="addQuestion(5)">不定项选择题</div>
+</div>
+
+<div id="w" closed="true" class="easyui-window" title="预览问卷" data-options="shadow:true,minimizable:false,inline:false"
+     style="width:80%;height:auto;padding:10px">
+    <div style="width: 100%;padding: 20px;text-align: left;font-size: 15px">
+        <p><strong><label>问卷批次：</label></strong><span id="batchTitle"></span></p>
+        <p><strong><label>问卷名称：</label></strong><span id="paperTitle">单独</span></p>
+        <p><strong><label>总题数：</label></strong><span id="questionNumber"></span></p>
+        <p><strong><label>总分数：</label></strong><span id = "point"></span></p>
+        <h1 align="center" id="paperTitle2"></h1>
+        <hr/>
+        <div>
+            <p><label>开始时间：</label><input class="easyui-datetimespinner" style="width:300px"></p>
+            <p><label>结束时间：</label><input class="easyui-datetimespinner" style="width:300px"></p>
+            <p><label>上传视频：</label><input class="easyui-filebox" style="width:300px" data-options="buttonText:'选择文件'"></p>
+            <hr/>
+            <div id="theQuestionList">
+
+            </div>
+            <div style="text-align:center;margin-top:20px">
+                <a href="javascript:void(0)"class="easyui-linkbutton" onclick="login()" style="width: 30%">
+                    保存
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../js/examPaper-detail.js"></script>
+<script type="text/javascript" src="../../js/examPaper-editor.js"></script>
+<script>
+    paperEditorInit();
+</script>
+</html>

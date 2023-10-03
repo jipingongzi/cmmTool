@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body>
+<div style="margin: 20px">
+    <input class="easyui-textbox" style="width:20%;height:32px"data-options="prompt:'银行名'" id="name">
+    <select class="easyui-combobox" name="language" style="width: 20%" id="tops">
+    </select>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="bankList()" iconCls="icon-search">查询</a>
+</div>
+<table class="easyui-datagrid" data-options="collapsible:true" id="bankTable">
+    <thead>
+    <tr>
+        <th data-options="field:'name'">银行名</th>
+        <th data-options="field:'code'">代码</th>
+        <th data-options="field:'managerName'">联系人姓名</th>
+        <th data-options="field:'managerPhone'">联系人电话</th>
+        <th data-options="field:'top'">顶层机构</th>
+        <th data-options="field:'leaf'">底层机构</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<div style="margin:20px 0;"></div>
+
+<div id="w" closed="true" class="easyui-window" title="用户详情" data-options="minimizable:false,inline:true" style="width:80%;height:auto;padding:10px;">
+    The window content.
+</div>
+</body>
+<script>
+
+    var admin = JSON.parse(window.localStorage.getItem("admin"));
+    init();
+    function init(){
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/admin/bank/top",
+            dataType: "json",
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_ADMIN_TOKEN",admin.currentToken);
+                request.setRequestHeader("XC_ADMIN_BANK_CODE",admin.bankCode);
+            },
+            success: function(data){
+                if(data.apiStatus == 0){
+                    var tops = data.data;
+                    $('#tops').combobox({
+                        data:tops,
+                        valueField:'code',
+                        textField:'name'
+                    });
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+        $('#bankTable').datagrid({
+            url: "/admin/bank/list",
+            fitColumns: true,
+            pagination: true,
+            striped: true,
+            method: "get",
+            pageList: [2,5,10,20],
+            pageSize: 10,
+            columns: [[
+                 { field: 'id', title: '编号', width: 50, align: "center" },
+                 { field: 'name', title: '银行名', width: 80, align: "center" },
+                 { field: 'code', title: '代码', width: 120, align: "center" },
+                 { field: 'managerName', title: '联系人姓名', width: 50, align: "center"},
+                 { field: 'managerPhone', title: '联系人电话', width: 50, align: "center" },
+                 { field: 'root', title: '顶级机构', width: 30, align: "center"},
+                 { field: 'leaf', title: '底层机构', width: 30, align: "center"},
+            ]],
+            queryParams: {
+                name: $("#name").val(),
+                code: $('#tops').combobox('getValues').toString()
+            },
+            headers:{
+                "XC_ADMIN_TOKEN": admin.currentToken,
+                "XC_ADMIN_BANK_CODE":admin.bankCode
+            },
+            loadFilter: function(data){
+                if (data.apiStatus == 0){
+                    var page = {};
+                    page.total = data.data.totalElements;
+                    page.rows = data.data.content;
+                    return page;
+                } else {
+                    message(data.info)
+                }
+            },
+            onDblClickRow:function (rowIndex, rowData){
+                bankDetail(rowData.id);
+            }
+        });
+    }
+
+    function bankList(){
+        $('#bankTable').datagrid('load',{
+            name: $("#name").val(),
+            code: $('#tops').combobox('getValues').toString()
+        });
+    }
+
+    function bankDetail(id){
+        var tab = {};
+        tab.text = "银行详情";
+        tab.innerPage = 'bank-detail.html?bankId=' + id;
+        window.parent.addMainTab(tab);
+    }
+</script>
+</html>

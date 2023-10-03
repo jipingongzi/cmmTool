@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body>
+<div style="margin: 20px">
+    <select class="easyui-combobox" name="language" style="width: 20%" id="batchs" data-options="prompt:'问卷批次'">
+    </select>
+    <input class="easyui-textbox" style="width:20%;height:32px"data-options="prompt:'问卷名'" id="name">
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="paperList()" iconCls="icon-search">查询</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" style="float: right" onclick="editor()"
+       iconCls="icon-add">创建新问卷
+    </a>
+</div>
+<table class="easyui-datagrid" data-options="collapsible:true" id="paperTable">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<div style="margin:20px 0;"></div>
+
+<div id="mappingWindow" closed="true" class="easyui-window" title="问卷分配" data-options="minimizable:false,inline:true"
+     style="width:25%;height:auto;padding:10px;text-align: center">
+    <label>问卷编号：</label><span id="mappingPaper"></span>
+    <div style="margin-bottom: 20px"></div>
+    <label>用户分组：</label><select class="easyui-combobox" name="language" style="width: 45%" id="groups">
+    </select>
+    <div style="margin-bottom: 20px"></div>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="mapping()"
+       iconCls="icon-ok">分配问卷
+    </a>
+</div>
+
+<div id="moreActW" class="easyui-menu" style="width:120px;">
+    <div onclick="openBatchMappingWindow(this)">批量分配</div>
+    <div onclick="disablePaper(this)">禁用</div>
+    <div onclick="remove(this)">删除</div>
+    <div onclick="exportInstance(this)">导出实例</div>
+</div>
+
+<div id="batchMappingWindow" closed="true" class="easyui-window" title="批量问卷分配" style="width:40%;padding: 20px;text-align: left">
+    <label>* 问卷编号：</label><span id="batchMappingPaper"></span>
+
+    <div style="margin-bottom: 20px"><hr/></div>
+
+    <label>* 用户分组：</label>
+    <select class="easyui-combobox" name="language" style="width: 50%" id="batchGroups"></select>
+    <div style="margin-top: 10px;border:1px dashed #009999;padding: 8px;color:#E3AC00FF ">
+        <input id="batchOldGroupTag" class="easyui-tagbox"  label="" style="width:100%">
+    </div>
+    <div style="margin-bottom: 20px"><hr/></div>
+
+    <label>* 用户名：</label>
+    <input class="easyui-textbox" style="width:50%;height:32px"data-options="prompt:'用户名'" id="batchUserName">
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="searchMappingCandidate()" iconCls="icon-search">查询</a>
+    <div id="userSearchDiv" style="margin-left: 20px;font-size: small;color:#009999 ">
+
+    </div>
+    <div style="margin-top: 10px;border:1px dashed #009999;padding: 8px;color:#E3AC00FF ">
+        <input id="batchOldUserTag" class="easyui-tagbox"  label="" style="width:100%">
+    </div>
+
+</div>
+
+</body>
+<script type="text/javascript" src="../../js/examPaper-list.js"></script>
+</html>

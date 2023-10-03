@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body>
+<div style="margin: 20px">
+    <input class="easyui-textbox" style="width:20%;height:32px"data-options="prompt:'用户名'" id="name">
+    <select class="easyui-combobox" name="language" style="width: 20%" id="groups">
+    </select>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="userList()" iconCls="icon-search">查询</a>
+</div>
+<table class="easyui-datagrid" data-options="collapsible:true" id="userTable">
+</table>
+<div style="margin:20px 0;"></div>
+
+<div id="w" closed="true" class="easyui-window" title="用户详情" data-options="minimizable:false,inline:true" style="width:80%;height:auto;padding:10px;">
+    The window content.
+</div>
+</body>
+<script>
+
+    var admin = JSON.parse(window.localStorage.getItem("admin"));
+    init();
+    function init(){
+        $('#userListPage').pagination({
+            total:0,
+            pageSize:10
+        });
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/admin/user/group/list",
+            dataType: "json",
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_ADMIN_TOKEN",admin.currentToken);
+            },
+            success: function(data){
+                if(data.apiStatus == 0){
+                    var groups = data.data;
+                    $('#groups').combobox({
+                        data:groups,
+                        valueField:'id',
+                        textField:'title'
+                    });
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+        $('#userTable').datagrid({
+            url: "/admin/user/list",
+            fitColumns: true,
+            pagination: true,
+            striped: true,
+            method: "get",
+            pageList: [2,5,10,20],
+            pageSize: 10,
+            columns: [[
+                 { field: 'id', title: '编号', width: 50, align: "center" },
+                 { field: 'name', title: '用户名', width: 50, align: "center" },
+                 { field: 'idNo', title: '身份证', width: 50, align: "center" },
+                 { field: 'pwd', title: '密码', width: 50, align: "center"},
+                 { field: 'status', title: '状态', width: 50, align: "center" },
+                 { field: 'groupTitle', title: '分组', width: 100, align: "center"},
+                 { field: 'paperInstanceCount', title: '提交问卷数', width: 50, align: "center"},
+            ]],
+            queryParams: {
+                name: $("#name").val(),
+                groupId: $('#groups').combobox('getValues').toString()
+            },
+            headers:{
+                "XC_ADMIN_TOKEN": admin.currentToken
+            },
+            loadFilter: function(data){
+                if (data.apiStatus == 0){
+                    var page = {};
+                    page.total = data.data.totalElements;
+                    page.rows = data.data.content;
+                    return page;
+                } else {
+                    message(data.info)
+                }
+            },
+            onDblClickRow:function (rowIndex, rowData){
+                userDetail(rowData.id);
+            }
+        });
+    }
+
+    function userList(){
+        $('#userTable').datagrid('load',{
+            name: $("#name").val(),
+            groupId: $('#groups').combobox('getValues').toString()
+        });
+    }
+
+    function userDetail(id){
+        var tab = {};
+        tab.text = "用户详情";
+        tab.innerPage = 'user-detail.html?userId=' + id;
+        window.parent.addMainTab(tab);
+    }
+
+</script>
+</html>

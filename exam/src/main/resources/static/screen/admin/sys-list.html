@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body>
+<div style="margin: 20px">
+    <input class="easyui-textbox" style="width:20%;height:32px"data-options="prompt:'用户名'" id="name">
+    <select class="easyui-combobox" name="language" style="width: 20%" id="banks">
+    </select>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="adminList()" iconCls="icon-search">查询</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" style="float: right" onclick="addAdmin()"
+       iconCls="icon-add">添加管理员
+    </a>
+</div>
+<table class="easyui-datagrid" data-options="collapsible:true" id="adminTable">
+</table>
+<div style="margin:20px 0;"></div>
+
+<div id="addWindow" closed="true" class="easyui-window" title="添加管理员" data-options="minimizable:false,inline:true" style="text-align:center;width:30%;height:auto;padding:10px;">
+    <p>
+        <select class="easyui-combobox" name="language" style="width: 60%" id="banks2"></select>
+    </p>
+    <p>
+        <input class="easyui-textbox" style="width:60%;height:32px"data-options="prompt:'用户名'" id="addAdminName">
+    </p>
+    <p>
+        <input class="easyui-textbox" style="width:60%;height:32px"data-options="prompt:'密码'" id="addAdminPwd">
+    </p>
+    <a href="javascript:void(0)" class="easyui-linkbutton"  onclick="saveAdmin()"
+       iconCls="icon-add">添加
+    </a>
+</div>
+</body>
+<script>
+
+    var admin = JSON.parse(window.localStorage.getItem("admin"));
+    init();
+    function init(){
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/admin/bank/list?page=1&row=900000",
+            dataType: "json",
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_ADMIN_TOKEN",admin.currentToken);
+                request.setRequestHeader("XC_ADMIN_BANK_CODE",admin.bankCode);
+            },
+            success: function(data){
+                if(data.apiStatus == 0){
+                    var groups = data.data.content;
+                    $('#banks').combobox({
+                        data:groups,
+                        valueField:'code',
+                        textField:'name'
+                    });
+                    $('#banks2').combobox({
+                        data:groups,
+                        valueField:'code',
+                        textField:'name'
+                    });
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+        $('#adminTable').datagrid({
+            url: "/admin/sys/manager/list",
+            fitColumns: true,
+            pagination: true,
+            striped: true,
+            method: "get",
+            pageList: [2,5,10,20],
+            pageSize: 10,
+            columns: [[
+                 { field: 'id', title: '编号', width: 50, align: "center" },
+                 { field: 'name', title: '用户名', width: 50, align: "center" },
+                 { field: 'bankName', title: '银行', width: 50, align: "center" },
+                 { field: 'pwd', title: '密码', width: 50, align: "center"},
+                 { field: 'roleType', title: '类型', width: 50, align: "center" },
+                 { field: 'status', title: '状态', width: 50, align: "center" },
+                {field:'operate',title:'操作',align:'center',width:$(this).width()*0.07,
+                    formatter:function(value,rowData,rowIndex){
+                        var str =
+                            '<a href="#" name="disable" class="easyui-linkbutton" onclick="disable(\''+rowData.id+'\')"></a>' +
+                            '<a href="#" name="enable" class="easyui-linkbutton" onclick="enable(\''+rowData.id+'\')"></a>'
+                        return str;
+                    }}
+            ]],
+            queryParams: {
+                name: $("#name").val(),
+                bankCode: $('#banks').combobox('getValues').toString()
+            },
+            headers:{
+                "XC_ADMIN_TOKEN": admin.currentToken
+            },
+            loadFilter: function(data){
+                if (data.apiStatus == 0){
+                    var page = {};
+                    page.total = data.data.totalElements;
+                    page.rows = data.data.content;
+                    return page;
+                } else {
+                    message(data.info)
+                }
+            },
+            onLoadSuccess:function(data){
+                $("a[name='disable']").linkbutton({text:'禁用',plain:true,iconCls:'icon-cancel'});
+                $("a[name='enable']").linkbutton({text:'启用',plain:true,iconCls:'icon-ok'});
+            },
+        });
+    }
+
+    function adminList(){
+        $('#adminTable').datagrid('load',{
+            name: $("#name").val(),
+            bankCode: $('#banks').combobox('getValues').toString()
+        });
+    }
+
+    function disable(id){
+        $.ajax({
+            type: "PUT",
+            contentType: "application/json",
+            url: "/admin/sys/manager/disable/" + id,
+            dataType: "json",
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_ADMIN_TOKEN",admin.currentToken);
+            },
+            success: function(data){
+                if(data.apiStatus == 0){
+                    message(data.info);
+                    adminList();
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+    }
+
+    function enable(id){
+        $.ajax({
+            type: "PUT",
+            contentType: "application/json",
+            url: "/admin/sys/manager/enable/" + id,
+            dataType: "json",
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_ADMIN_TOKEN",admin.currentToken);
+            },
+            success: function(data){
+                if(data.apiStatus == 0){
+                    message(data.info);
+                    adminList();
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+    }
+
+    function addAdmin(){
+        $("#addWindow").window('open');
+    }
+
+    function saveAdmin(){
+        var newAdmin = {};
+        newAdmin.name = $("#addAdminName").val();
+        newAdmin.pwd = $("#addAdminPwd").val();
+        newAdmin.bankCode = $('#banks2').combobox('getValues').toString();
+        newAdmin.roleType = 'BANK_MANAGER';
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/admin/sys/manager/",
+            dataType: "json",
+            data: JSON.stringify(newAdmin),
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_ADMIN_TOKEN",admin.currentToken);
+            },
+            success: function(data){
+                if(data.apiStatus == 0){
+                    message(data.info);
+                    adminList();
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+    }
+
+</script>
+</html>

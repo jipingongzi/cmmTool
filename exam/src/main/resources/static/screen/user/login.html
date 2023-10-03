@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body style="text-align: center;background: #0E2D5F;height: 100% ;overflow:hidden;">
+    <div style="padding:1px 60px 20px 60px">
+        <form id="ff" method="post">
+            <h1 style="color:white;margin-top:200px">XC金融暗访调查系统</h1>
+            <h3 style="color: white">客户端</h3>
+            <table cellpadding="5" align="center" style="margin-top: 20px">
+                <tr>
+                    <td style="color: white">身份证号:</td>
+                    <td><input id="idNo" class="easyui-textbox" type="text" name="idNo" data-options="required:true"/></td>
+                </tr>
+                <tr>
+                    <td style="color: white">密码:</td>
+                    <td><input id="pwd" class="easyui-textbox" type="text" name="email" data-options="required:true"/></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="login()">登录</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重置</a>
+    </div>
+</body>
+<script>
+    function login(){
+        //清理数据
+
+        var loginVo = {};
+        loginVo.idNo = $("#idNo").val();
+        loginVo.pwd = $("#pwd").val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/user/sys/login",
+            data: JSON.stringify(loginVo),
+            dataType: "json",
+            success: function(data){
+                if(data.apiStatus == 0){
+                    window.localStorage.removeItem("user");
+                    window.localStorage.setItem("user",JSON.stringify(data.data));
+                    window.location.href = "home.html";
+                }else {
+                    messageError(data.info)
+                }
+            }
+        });
+    }
+    function clearForm(){
+        $('#ff').form('clear');
+    }
+</script>
+</html>

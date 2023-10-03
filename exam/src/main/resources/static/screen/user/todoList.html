@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body style="background-color: #0E2D5F">
+<div style="text-align: center">
+    <h1 style="color:white;letter-spacing: 10px">XC金融暗访调查系统</h1>
+    <div id="list" class="easyui-accordion" >
+    </div>
+</div>
+</body>
+<script>
+    var user = JSON.parse(window.localStorage.getItem("user"));
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "/user/exam/batch/list",
+        dataType: "json",
+        async: false,
+        beforeSend: function(request) {
+            request.setRequestHeader("XC_USER_TOKEN",user.currentToken);
+        },
+        success: function(data){
+            if(data.apiStatus == 0){
+                var batchs = data.data;
+                var html = "";
+                for (let i = 0; i < batchs.length; i++) {
+                    var batch = batchs[i];
+                    var batchStr = "<div title=\""+ batch.batchTitle +"\">";
+                    for (let j = 0; j < batch.paperList.length; j++) {
+                        var paper = batch.paperList[j];
+                        var paperStr = "<h3 id = "+ paper.id +
+                        " style=\"letter-spacing:5px;margin-left:20px;color:#0099FF;\" " +
+                         "onclick=\"paperDetail('"+ paper.id
+                         +"')\">"+
+                        paper.title +"</h3>";
+                        batchStr += paperStr;
+                    }
+                    batchStr += "</div>"
+                    console.log(batchStr)
+                    html += batchStr;
+                }
+                $("#list").append(html);
+            }else {
+                message(data.info)
+            }
+        }
+    });
+
+    function paperDetail(id) {
+        window.location.href = "paperDetail.html?paperId=" + id;
+    }
+</script>
+</html>

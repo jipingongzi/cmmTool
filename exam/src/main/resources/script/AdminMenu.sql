@@ -1,0 +1,13 @@
+INSERT INTO `sys_module` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `title`) VALUES ('1', '1', '2021-07-08 10:01:47.000000', '1', '2021-07-08 10:01:50.000000', '用户管理');
+INSERT INTO `sys_module` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `title`) VALUES ('2', '1', '2021-07-08 10:01:47.000000', '1', '2021-07-08 10:01:50.000000', '银行管理');
+INSERT INTO `sys_module` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `title`) VALUES ('3', '1', '2021-07-08 10:01:47.000000', '1', '2021-07-08 10:01:50.000000', '系统管理');
+INSERT INTO `sys_module` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `title`) VALUES ('4', '1', '2021-07-08 10:01:47.000000', '1', '2021-07-08 10:01:50.000000', '问卷管理');
+INSERT INTO `sys_module` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `title`) VALUES ('5', '1', '2021-07-08 10:01:47.000000', '1', '2021-07-08 10:01:50.000000', '查询报表');
+
+INSERT INTO `sys_module_function` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `inner_path`, `module_id`, `title`) VALUES ('1', '1', '2021-07-08 10:05:19.000000', '1', '2021-07-08 10:05:21.000000', 'user-list.html', '1', '用户列表');
+INSERT INTO `sys_module_function` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `inner_path`, `module_id`, `title`) VALUES ('2', '1', '2021-07-08 10:05:19.000000', '1', '2021-07-08 10:05:21.000000', 'bank-list.html', '2', '银行列表');
+INSERT INTO `sys_module_function` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `inner_path`, `module_id`, `title`) VALUES ('3', '1', '2021-07-08 10:05:19.000000', '1', '2021-07-08 10:05:21.000000', 'user-list.html', '3', '管理员列表');
+INSERT INTO `sys_module_function` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `inner_path`, `module_id`, `title`) VALUES ('4', '1', '2021-07-08 10:05:19.000000', '1', '2021-07-08 10:05:21.000000', 'user-list.html', '4', '批次列表');
+INSERT INTO `sys_module_function` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `inner_path`, `module_id`, `title`) VALUES ('5', '1', '2021-07-08 10:05:19.000000', '1', '2021-07-08 10:05:21.000000', 'user-list.html', '4', '问卷列表');
+INSERT INTO `sys_module_function` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `inner_path`, `module_id`, `title`) VALUES ('6', '1', '2021-07-08 10:05:19.000000', '1', '2021-07-08 10:05:21.000000', 'user-list.html', '4', '题目列表');
+INSERT INTO `sys_module_function` (`id`, `create_id`, `create_time`, `update_id`, `update_time`, `inner_path`, `module_id`, `title`) VALUES ('7', '1', '2021-07-08 10:05:19.000000', '1', '2021-07-08 10:05:21.000000', 'user-list.html', '5', '问卷报表');

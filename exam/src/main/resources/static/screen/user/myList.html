@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+    <style>
+        .shadow{
+            box-shadow: 0px 3px 17px 1px rgba(0,0,0,0.56);
+            -webkit-box-shadow: 0px 3px 17px 1px rgba(0,0,0,0.56);
+            -moz-box-shadow: 0px 3px 17px 1px rgba(0,0,0,0.56);
+            /*flex 布局*/
+            display: flex;
+            /*实现垂直居中*/
+            align-items: center;
+            /*实现水平居中*/
+            margin-left: 5%;
+            width: 90%;
+            padding-left: 20px;
+            margin-top: 20px;
+            text-align: left;
+            background-color: #009999;
+        }
+        .shadowRed{
+            background-color: #CC2222;
+        }
+        .shadowBlue{
+            background-color: #00bbee;
+        }
+        .shadowYellow{
+            background-color: #ffab2e;
+        }
+        .shadowDark{
+            background-color: #0E2D5F;
+        }
+    </style>
+
+</head>
+<body style="background-color: #0E2D5F">
+<div>
+    <div style="text-align: center">
+        <h1 style="color:white;letter-spacing: 10px">XC金融暗访调查系统</h1>
+        <h2 style="color:white;letter-spacing: 10px">我的问卷</h2>
+        <hr/>
+    </div>
+    <div style="margin-left: 5%;margin-top: 20px">
+        <label style="color: white"><strong>只看进行中：</strong></label>
+        <input id="onlyInProgress"  class="easyui-switchbutton" data-options="onText:'Yes',offText:'No'">
+    </div>
+    <div class="shadow shadowDark">
+        <h3  style="color: white;width: 18%">问卷名词</h3>
+        <h3  style="color: white;width: 18%;margin-left: 5%">调查银行</h3>
+        <h3 style="color: white;width: 18%;margin-left: 5%">调查时间</h3>
+        <h3 style="color: white;width: 18%;margin-left: 5%">问卷状态</h3>
+
+    </div>
+    <div id="list" >
+    </div>
+</div>
+</body>
+<script>
+    var user = JSON.parse(window.localStorage.getItem("user"));
+    var status = '';
+    $("#onlyInProgress").switchbutton({
+        onChange:function (){
+            if(this.checked){
+                init("IN_PROGRESS")
+                status = "IN_PROGRESS";
+            }else {
+                init();
+                status ='';
+            }
+        }
+    })
+    init();
+
+    function init(status) {
+        var listUrl = "";
+        if(status === undefined || '' === status){
+            listUrl = "/user/exam/paper/instance/list";
+        }else{
+            listUrl = "/user/exam/paper/instance/list?status=" + status;
+        }
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: listUrl,
+            dataType: "json",
+            async: false,
+            beforeSend: function (request) {
+                request.setRequestHeader("XC_USER_TOKEN", user.currentToken);
+            },
+            success: function (data) {
+                if (data.apiStatus == 0) {
+                    $("#list").html("");
+                    var list = data.data;
+                    var html = "";
+
+                    for (let i = 0; i < list.length; i++) {
+                        var item = list[i];
+                        var rowHtml =  " <h4 onclick=paperDetailUpdate('" + item.id + "') style=\"color: white;width: 18%\">" + item.paperTitle + "</h4>\n" +
+                            "            <h4 style=\"color: white;width: 18%;margin-left:5%\">" + item.bankName + "</h4>\n" +
+                            "            <h4 style=\"color: white;width: 18%;margin-left:5%\">" + item.startTime + "</h4>\n" +
+                            "            <h4 style=\"color: white;width: 18%;margin-left:5%\">" + item.status + "</h4>\n" ;
+                        if ("AUDIT_FAIL" === item.status) {
+                            html = "<div class=\"shadow shadowRed\">\n" + rowHtml + "</div>"
+                        } else if ("AUDIT_SUCCESS" === item.status) {
+                            html = "<div class=\"shadow shadowBlue\">\n" + rowHtml + "</div>"
+                        } else if ("IN_PROGRESS" === item.status) {
+                            html = "<div class=\"shadow\">\n" + rowHtml +
+                                "            <span onclick= \"complete('" + item.id + "')\" style=\"width: 10%;background-color: white;color:#009999;text-align:center;border-radius:10px\">\n" +
+                                "                <strong>\n" +
+                                "                    确认完成\n" +
+                                "                </strong>\n" +
+                                "            </span>\n" +
+                                "        </div>"
+                        } else if ("COMPLETE" === item.status) {
+                            html = "<div class=\"shadow shadowBlue\">\n" + rowHtml +
+                                "            <span onclick= \"submit('" + item.id + "')\" style=\"width: 10%;background-color: white;color:#009999;text-align:center;border-radius:10px\">\n" +
+                                "                <strong>\n" +
+                                "                    确认提交\n" +
+                                "                </strong>\n" +
+                                "            </span>\n" +
+                                "        </div>"
+                        } else {
+                            html = "<div class=\"shadow shadowYellow\">\n" + rowHtml +
+                                "            <span style=\"width: 10%;background-color: white;color:#009999;text-align:center;border-radius:10px\">\n" +
+                                "                <strong>\n" +
+                                "                    等待审核\n" +
+                                "                </strong>\n" +
+                                "            </span>\n" +
+                                "        </div>"
+                        }
+                        $("#list").append(html);
+                    }
+                } else {
+                    message(data.info)
+                }
+            }
+        });
+    }
+
+    function paperDetailUpdate(id) {
+        window.location.href = "paperDetail-update.html?paperInstanceId=" + id;
+    }
+    function complete(id){
+        $.ajax({
+            type: "PUT",
+            contentType: "application/json",
+            url: "/user/exam/paper/instance/completion/" + id,
+            dataType: "json",
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_USER_TOKEN",user.currentToken);
+            },
+            success: function(data){
+                if(data.apiStatus === 0){
+                    init(status);
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+    }
+    function submit(id){
+        $.ajax({
+            type: "PUT",
+            contentType: "application/json",
+            url: "/user/exam/paper/instance/submission/" + id,
+            dataType: "json",
+            async: false,
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_USER_TOKEN",user.currentToken);
+            },
+            success: function(data){
+                if(data.apiStatus === 0){
+                    init(status);
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+    }
+
+</script>
+</html>

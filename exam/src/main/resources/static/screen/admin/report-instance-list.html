@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body>
+<div style="margin: 20px">
+    <select class="easyui-combobox" name="language" style="width: 10%" id="batchs" data-options="prompt:'问卷批次'">
+    </select>
+    <select class="easyui-combobox" name="language" style="width: 10%" id="banks" data-options="prompt:'调查银行'">
+    </select>
+
+    <input class="easyui-textbox" style="width:8%;height:32px"data-options="prompt:'问卷名'" id="paperTitle">
+    <input class="easyui-textbox" style="width:8%;height:32px"data-options="prompt:'用户名'" id="userName">
+
+    <label>开始时间:</label>
+    <input class="easyui-datetimebox" id="minStartTime" style="width:12%">
+    <label>结束时间:</label>
+    <input class="easyui-datetimebox" id="maxStartTime" style="width:12%">
+
+    <label>最低分:</label>
+    <input id="minPoint" class="easyui-numberspinner" style="width:4%;"data-options="min:0,max:100,editable:true">
+    <label>最高分:</label>
+    <input id="maxPoint" class="easyui-numberspinner" style="width:4%;"data-options="min:0,max:100,editable:true">
+
+    <a href="javascript:void(0)"  class="easyui-linkbutton" onclick="instanceList()"iconCls="icon-search">查询</a>
+</div>
+<table class="easyui-datagrid" data-options="collapsible:true" id="instanceTable">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<div style="margin:20px 0;"></div>
+
+</body>
+<script type="text/javascript" src="../../js/report-instance-list.js"></script>
+</html>

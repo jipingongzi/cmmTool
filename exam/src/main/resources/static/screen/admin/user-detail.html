@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body>
+<div  style="margin: 20px;width: 80%">
+    <p><label>姓名：</label><span id="name"></span></p>
+    <p><label>身份证：</label><span id="idNo"></span></p>
+    <p><label>密码：</label><span id="pwd"></span></p>
+    <p><label>所属分组：</label><span id="groupTitle"></span></p>
+    <p><label>状态：</label><span id="status"></span></p>
+
+    <h5>提交问卷列表</h5>
+    <table class="easyui-datagrid" data-options="collapsible:true" id="paperInstanceTable">
+        <thead>
+        <tr>
+            <th data-options="field:'id'">编号</th>
+            <th data-options="field:'paperTitle'">问卷名称</th>
+            <th data-options="field:'userName'">提交人</th>
+            <th data-options="field:'bankName'">调查银行</th>
+            <th data-options="field:'status'">状态</th>
+            <th data-options="field:'questionNumber'">答题数</th>
+            <th data-options="field:'point'">问卷得分</th>
+            <th data-options="field:'startTime'">开始时间</th>
+            <th data-options="field:'endTime'">结束时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div id="w" closed="true" class="easyui-window" title="问卷实例详情" data-options="minimizable:false,inline:true" style="width:80%;height:auto;padding:10px;">
+    The window content.
+</div>
+</body>
+<script>
+    var admin = JSON.parse(window.localStorage.getItem("admin"));
+    init();
+    function init(){
+        $('#userListPage').pagination({
+            total:0,
+            pageSize:10
+        });
+        var userId = getUrlParam("userId");
+        var userDetail = {};
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "/admin/user/detail/" + userId,
+            dataType: "json",
+            beforeSend: function(request) {
+                request.setRequestHeader("XC_ADMIN_TOKEN",admin.currentToken);
+            },
+            success: function(data){
+                if(data.apiStatus == 0){
+                    userDetail = data.data;
+                    var userBase = userDetail.userDto;
+                    $("#name").text(userBase.name);
+                    $("#idNo").text(userBase.idNo);
+                    $("#pwd").text(userBase.pwd);
+                    $("#status").text(userBase.status);
+                    $("#groupTitle").text(userBase.groupTitle);
+
+                    $('#paperInstanceTable').datagrid({
+                        fitColumns: true,
+                        pagination: true,
+                        striped: true,
+                        method: "get",
+                        pageList: [2,5,10,20],
+                        pageSize: 10,
+                        columns: [[
+                            { field: 'id', title: '编号', width: 50, align: "center" },
+                            { field: 'paperTitle', title: '问卷名称', width: 50, align: "center" },
+                            { field: 'userName', title: '提交人', width: 50, align: "center" },
+                            { field: 'bankName', title: '调查银行', width: 120, align: "center"},
+                            { field: 'status', title: '状态', width: 50, align: "center" },
+                            { field: 'questionNumber', title: '答题数', width: 50, align: "center"},
+                            { field: 'point', title: '问卷得分', width: 50, align: "center"},
+                            { field: 'startTime', title: '开始时间', width: 100, align: "center"},
+                            { field: 'endTime', title: '结束时间', width: 100, align: "center"},
+                        ]],
+                        headers:{
+                            "XC_ADMIN_TOKEN": admin.currentToken
+                        },
+                        onDblClickRow:function (rowIndex, rowData){
+                            paperInstanceDetail(rowData.id);
+                        },
+                        data:userDetail.examPaperInstanceListDtoList,
+                        loadFilter : function (data){
+                            if (typeof data.length == 'number' && typeof data.splice == 'function') {
+                                data = {
+                                    total : data.length,
+                                    rows : data
+                                }
+                            }
+                            var dg = $(this);
+                            var opts = dg.datagrid('options');
+                            var pager = dg.datagrid('getPager');
+                            pager.pagination({
+                                onSelectPage : function(pageNum, pageSize) {
+                                    opts.pageNumber = pageNum||1;
+                                    opts.pageSize = pageSize;
+                                    pager.pagination('refresh', {
+                                        pageNumber : pageNum,
+                                        pageSize : pageSize
+                                    });
+                                    dg.datagrid('loadData', data);
+                                }
+                            });
+                            if (!data.originalRows) {
+                                data.originalRows = (data.rows);
+                            }
+                            var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
+                            var end = start + parseInt(opts.pageSize);
+                            data.rows = (data.originalRows.slice(start, end));
+                            data.total = data.originalRows.length;
+
+                            return data;
+                        }
+                    });
+                }else {
+                    message(data.info)
+                }
+            }
+        });
+    }
+
+    function paperInstanceDetail(id){
+        var tab = {};
+        tab.text = "问卷实例详情";
+        tab.innerPage = 'examPaperInstance-detail.html?id=' + id;
+        window.parent.addMainTab(tab);
+    }
+</script>
+</html>

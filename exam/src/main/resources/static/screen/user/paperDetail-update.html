@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/jquery-easyui-1.7.0/themes/icon.css">
+    <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.15.0.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/oss.js"></script>
+    <style>
+        .optionForm{
+
+        }
+        .optionDiv{
+            margin-top:10px;margin-bottom: 10px
+        }
+        .question{
+            margin: 10px;
+            margin-left: 20%;
+            border:1px solid #ccc;
+            padding: 10px;
+        }
+        .targetarea{
+            height:550px;
+            overflow-scrolling: auto;
+        }
+        .proxy{
+            border:1px solid #ccc;
+            width:80px;
+            background:#fafafa;
+        }
+        .fileSpan{}
+    </style>
+    <title>XC金融暗访调查系统</title>
+</head>
+<body>
+<div>
+    <h1 id="editable" style="color: red" align="center"></h1>
+    <div style="width: 100%;padding: 20px;text-align: left;font-size: 15px">
+        <p><strong><label>问卷批次：</label></strong><span id="batchTitle"></span></p>
+        <p><strong><label>问卷名称：</label></strong><span id="paperTitle"></span></p>
+        <p><strong><label>总题数：</label></strong><span id="questionNumber"></span></p>
+        <p><strong><label>总分数：</label></strong><span id = "point"></span></p>
+        <p><strong><label>描述：</label></strong><span id = "description"></span></p>
+        <h1 align="center" id="paperTitle2"></h1>
+        <hr/>
+        <div>
+            <p><label>调查银行：</label><select class="easyui-combobox" name="language" style="width: 300px" id="banks">
+            </select></p>
+            <p><label>开始时间：</label><input id="startTime" class="easyui-datetimespinner" style="width:300px"
+                                          data-options="
+                                          showSeconds:true,
+                                          formatter:xcDateTimeFormatter,parser:xcDateTimeParser,
+                                          selections:[[0,4],[5,7],[8,10]]"></p>
+            <p><label>结束时间：</label><input id="endTime" class="easyui-datetimespinner" style="width:300px"
+                                          data-options="
+                                          showSeconds:true,
+                                          formatter:xcDateTimeFormatter,parser:xcDateTimeParser,
+                                          selections:[[0,4],[5,7],[8,10]]"></p>
+            <p><label>上传视频：</label><input id= "paperFile" name="paperFile" class="easyui-filebox" style="width:300px"
+                                          data-options="buttonText:'选择文件',multiple:true"></p>
+            <div id="divFiles"></div>
+            <hr/>
+            <div id="theQuestionList">
+
+            </div>
+            <div style="text-align:center;margin-top:20px">
+                <a id="createBtn" href="javascript:void(0)"class="easyui-linkbutton" onclick="create()" style="width:
+                30%">
+                    保存
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="previewW" class="easyui-window" title="附件预览" style="width:600px;height:400px;text-align: center;padding: 20px"
+     data-options="iconCls:'icon-help',modal:true,closed:true">
+    <img id="picture" style="width: 500px">
+    <video controls="controls" id="video" style="width: 500px;height: auto">
+        Your browser does not support the video tag.
+    </video>
+</div>
+<div id="processW" class="easyui-window" title="上传进度" style="width:600px;height:200px;text-align: center;padding: 20px"
+     data-options="iconCls:'icon-help',modal:true,closed:true">
+    <p>正在上传，请稍后...</p>
+    <div id="processBar" class="easyui-progressbar" data-options="value:0" style="width:400px;margin-left: 50px"></div>
+</div>
+</body>
+
+<script type="text/javascript" src="paperDetail-update.js"></script>
+<script>
+
+    var user = JSON.parse(window.localStorage.getItem("user"));
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "/user/bank/list",
+        dataType: "json",
+        async: false,
+        beforeSend: function(request) {
+            request.setRequestHeader("XC_USER_TOKEN", user.currentToken);
+        },
+        success: function(data){
+            if(data.apiStatus == 0){
+                var banks = data.data;
+                $('#banks').combobox({
+                    data:banks,
+                    valueField:'code',
+                    textField:'name'
+                });
+            }else {
+                message(data.info)
+            }
+        }
+    });
+    $('#paperFile').filebox({
+        buttonText: '选择文件',  //按钮文本
+        buttonAlign: 'right',   //按钮对齐
+        multiple: true,
+        onChange: async function (e) {
+            $("#paperFile").filebox("files")[0]
+            for (let i = 0; i < $("#paperFile").filebox("files").length; i++) {
+                var file = $("#paperFile").filebox("files")[i];
+                var fileType = fileAlign(file.name);
+                if(fileType === '未知类型'){
+                    messageError("请上传图片或视频！");
+                    return ;
+                }
+                var resp = await uploadFile(file);
+                var fileName = "附件" + ($("#divFiles").children("p").length + 1) + "-" + fileType;
+                $("#divFiles").append("<p key ='"+ resp.name +"' url='"+ resp.url
+                +"' style='margin-left: 30px;font-size: smaller'>"+fileName+
+                "<span onclick='removeFile(this)' style='margin-left:20px;color: #CC2222'>[删除附件]</span>" +
+                 "<span onclick='preview(this)' style='margin-left:20px;color:#0099FF'>[预览附件]</span></p>")
+            }
+        }
+    })
+
+    $('#previewW').window({
+        onClose:function () {
+            $("#picture").attr("src",null)
+            $("#video").attr("src",null)
+        }
+    });
+    paperDetailInstanceInit();
+
+    async function uploadFile(file) {
+        var timestamp = (new Date()).valueOf();
+        $("#processW").window("open");
+        var ossKey = getUrlParam("paperInstanceId") + "_" + user.id + "_" + timestamp + "_" +file.name ;
+
+        var resp = await ossClient.put(ossKey, file);
+        $("#processBar").progressbar("setValue",100);
+        setTimeout(function(){
+            $("#processW").window("close");
+            $("#processBar").progressbar("setValue",0);
+        },1000);
+        return resp;
+    }
+    
+    function removeFile(obj) {
+        $(obj).parent().remove();
+    }
+
+    function preview(obj ){
+        var url = $(obj).parent().attr("url");
+        var key = $(obj).parent().attr("key");
+        $("#previewW").window("open");
+        if('图片' === fileAlign(key)){
+            console.log("v h")
+            $("#video").hide();
+            $("#picture").show();
+            $("#picture").attr("src",url)
+        }else {
+            $("#picture").hide();
+            $("#video").show();
+            $("#video").attr("height","auto")
+        }
+    }
+
+    function fileAlign(fileName) {
+        if(fileName) {
+            var index = fileName.lastIndexOf(".");
+            var ext = fileName.substr(index + 1);
+            var picture = ['png', 'jpg', 'jpeg'];
+            if (picture.indexOf(ext.toLocaleLowerCase()) !== -1) {
+                return "图片";
+            }
+            var video = ['mp4', 'avi', 'm4v'];
+            if (video.indexOf(ext.toLocaleLowerCase()) !== -1) {
+                return "视频";
+            }
+            return "未知类型";
+        }else {
+            return "未知类型";
+        }
+    }
+</script>
+</html>
