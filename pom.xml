@@ -5,9 +5,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>exam</module>
-		<module>ww</module>
-		<module>exam</module>
-		<module>exam</module>
 	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
@@ -34,6 +31,10 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
