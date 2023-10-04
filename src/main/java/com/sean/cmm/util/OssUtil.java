@@ -1,4 +1,8 @@
 package com.sean.cmm.util;
 
-public class OssUtil {
+import java.io.File;
+
+public final class OssUtil {
+
+    public static void upload(File file){}
 }
