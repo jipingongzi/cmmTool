@@ -11,4 +11,7 @@ public final class OssUtil {
         return null;
     }
 
+    public static List<String> getFileUrls(){
+        return null;
+    }
 }
