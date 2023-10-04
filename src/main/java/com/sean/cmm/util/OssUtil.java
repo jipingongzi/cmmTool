@@ -1,7 +1,6 @@
 package com.sean.cmm.util;
 
 import java.io.File;
-import java.util.List;
 
 public final class OssUtil {
 
