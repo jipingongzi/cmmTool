@@ -33,4 +33,8 @@ public class ListFiles {
             System.out.println("The specified path is not a directory.");
         }
     }
+
+    private String parseFileName(String originalFileName){
+        return "";
+    }
 }
