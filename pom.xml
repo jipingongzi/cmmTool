@@ -75,6 +75,27 @@
 			<artifactId>jfoenix</artifactId>
 			<version>8.0.10</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv-platform</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.nd4j</groupId>
+			<artifactId>nd4j-native-platform</artifactId>
+			<version>1.0.0-beta7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.deeplearning4j</groupId>
+			<artifactId>deeplearning4j-core</artifactId>
+			<version>1.0.0-beta7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.deeplearning4j</groupId>
+			<artifactId>deeplearning4j-zoo</artifactId>
+			<version>1.0.0-beta7</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
