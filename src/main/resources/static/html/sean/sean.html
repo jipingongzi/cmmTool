@@ -3,12 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sean Icon</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+    html, body, .container {
+      height: 100%;
+      margin: 0;
+      display:flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    body {
+      background-color: #070F27;
+    }
+
+    .sean-logo {
+      font-size: 10rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      display: inline-block;
+      background-image: linear-gradient(rgba(33, 47, 66, 0.7), rgba(33, 47, 66, 0.7)), linear-gradient(90deg, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 75%);
+      background-size: 100% 100%, 400% 100%;
+      background-repeat: no-repeat;
+      background-position: 0 0, -200% 0;
+      background-blend-mode: normal;
+      -webkit-animation: shine 4s linear infinite;
+      animation: shine 4s linear infinite;
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      -o-background-clip: text;
+      background-clip: text;
+    }
+
+    @keyframes shine {
+      0% { background-position: 0 0, 0% 0; }
+      100% { background-position: 0 0, 100% 0; }
+    }
+
+  </style>
+    <title>SEAN Logo</title>
 </head>
 <body>
-<div class="icon">
-    Sean
+<div class="container">
+    <span class="sean-logo">sean</span>
 </div>
 </body>
 </html>
