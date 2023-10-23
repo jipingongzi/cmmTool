@@ -9,7 +9,7 @@ public class Gomoku {
     }
 
     public static class Board {
-        private State[][] grid;
+        private final State[][] grid;
 
         public Board() {
             grid = new State[BOARD_SIZE][BOARD_SIZE];
@@ -82,15 +82,15 @@ public class Gomoku {
 
         boolean gameOver = false;
         while (!gameOver) {
-            System.out.println(board.toString());
-            System.out.println(currentPlayer.toString() + " to move. Please enter coordinates (e.g., 7 7): ");
+            System.out.println(board);
+            System.out.println(currentPlayer + " to move. Please enter coordinates (e.g., 7 7): ");
             int x = scanner.nextInt();
             int y = scanner.nextInt();
             if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE && board.grid[x][y] == State.EMPTY) {
                 board.placeStone(x, y, currentPlayer);
                 if (board.checkWin(x, y, currentPlayer)) {
-                    System.out.println(board.toString());
-                    System.out.println(currentPlayer.toString() + " wins!");
+                    System.out.println(board);
+                    System.out.println(currentPlayer + " wins!");
                     gameOver = true;
                 } else {
                     currentPlayer = (currentPlayer == State.BLACK) ? State.WHITE : State.BLACK;
