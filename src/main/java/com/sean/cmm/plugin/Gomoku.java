@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Gomoku {
     public static final int BOARD_SIZE = 15;
+
     public enum State {
         EMPTY, BLACK, WHITE
     }
