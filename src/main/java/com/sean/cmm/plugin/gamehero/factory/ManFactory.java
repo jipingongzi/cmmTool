@@ -32,9 +32,12 @@ public class ManFactory {
 
     public static List<Man> init(Integer number){
         List<Man> slots = new ArrayList<>();
-
         Random random = new Random();
         List<List<Man>> pool = Arrays.asList(warriorPool, magePool, shooterPool);
+        if(number > pool.size()){
+            System.out.printf("Currently only support %d characters", pool.size());
+            number = pool.size();
+        }
         for (int i = 0; i < number; i++) {
             List<Man> currentList = pool.get(random.nextInt(pool.size()));
             if (!currentList.isEmpty()) {

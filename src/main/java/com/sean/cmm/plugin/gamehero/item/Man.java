@@ -35,7 +35,7 @@ public class Man {
 
     public void pick(Equipment equipment){
         if(this.equipments.size() >= 6){
-            System.out.printf("You can only pick %d equipments%n", maxEquipmentNumber);
+            System.out.printf("You can only pick %d equipments", maxEquipmentNumber);
             return;
         }
         equipments.add(equipment);
