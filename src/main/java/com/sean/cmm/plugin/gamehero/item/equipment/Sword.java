@@ -1,6 +1,6 @@
 package com.sean.cmm.plugin.gamehero.item.equipment;
 
-import com.sean.cmm.plugin.gamehero.constant.ManType;
+import com.sean.cmm.plugin.gamehero.constant.CharacterType;
 
 import java.util.Collections;
 import java.util.Set;
@@ -11,32 +11,32 @@ public class Sword extends Equipment {
     }
 
     @Override
-    protected Set<ManType> getManTypes() {
+    public Set<CharacterType> getManTypes() {
         return Collections.emptySet();
     }
 
     @Override
-    protected int increaseAttackPower() {
+    public int increaseAttackPower() {
         return 5;
     }
 
     @Override
-    protected int increaseDefensePower() {
+    public int increaseDefensePower() {
         return 0;
     }
 
     @Override
-    protected int increaseHealthPower() {
+    public int increaseHealthPower() {
         return 0;
     }
 
     @Override
-    protected int increaseMagicPower() {
+    public int increaseMagicPower() {
         return 0;
     }
 
     @Override
-    protected Set<String> skills() {
+    public Set<String> skills() {
         return Collections.emptySet();
     }
 }
