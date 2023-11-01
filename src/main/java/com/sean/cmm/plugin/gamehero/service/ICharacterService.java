@@ -1,14 +1,18 @@
 package com.sean.cmm.plugin.gamehero.service;
 
+import com.sean.cmm.plugin.gamehero.item.Character;
+
 public interface ICharacterService {
 
-    void init(Integer number);
+    void init(int number);
 
-    void pickEquipment(Integer index);
+    void choose(int index);
 
-    void unpickEquipment(Integer index);
+    void pickEquipment(int index);
 
-    void status();
+    void unpickEquipment(int index);
+
+    Character status();
 
     void levelUp();
 }

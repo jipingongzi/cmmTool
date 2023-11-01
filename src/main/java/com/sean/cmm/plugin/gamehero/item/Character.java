@@ -49,6 +49,8 @@ public class Character {
         if (equipment != null) {
             this.equipments.remove(equipment);
             System.out.printf("You unpicked %s \n", equipment.getName());
+        }else {
+            System.out.println("Invalid parameter");
         }
     }
 
@@ -95,5 +97,17 @@ public class Character {
                 + this.equipments.stream().map(Equipment::getName).collect(Collectors.joining(","))
                 + "] \n";
         return baseInfo + skillStr + equipmentStr;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public CharacterType getType() {
+        return type;
+    }
+
+    public Integer getLevel() {
+        return level;
     }
 }

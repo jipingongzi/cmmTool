@@ -31,6 +31,23 @@ public enum CharacterType {
     private final Integer heathPower4LevelUp;
     private final Integer magicPower4LevelUp;
 
+    public String getLevelUpStr(){
+        StringBuilder str = new StringBuilder("increased");
+        if(this.attackPower4LevelUp != 0){
+            str.append(" attack power: ").append(this.attackPower4LevelUp);
+        }
+        if(this.defensePower4LevelUp != 0){
+            str.append(" defense power: ").append(this.defensePower4LevelUp);
+        }
+        if(this.heathPower4LevelUp != 0){
+            str.append(" health power: ").append(this.heathPower4LevelUp);
+        }
+        if(this.magicPower4LevelUp != 0){
+            str.append(" magic power: ").append(this.magicPower4LevelUp);
+        }
+        return str.toString();
+    }
+
     public Integer getAttackPower() {
         return attackPower;
     }
