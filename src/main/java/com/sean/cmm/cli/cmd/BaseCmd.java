@@ -1,6 +1,9 @@
-package com.sean.cmm.cli;
+package com.sean.cmm.cli.cmd;
 
-public abstract class BaseCmd implements ICmd{
+import com.sean.cmm.cli.ICmd;
+import com.sean.cmm.cli.ICmdService;
+
+public abstract class BaseCmd implements ICmd {
 
     protected ICmdService service;
     public BaseCmd getCmd(String userInput){

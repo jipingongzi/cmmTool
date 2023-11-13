@@ -1,6 +1,6 @@
 package com.sean.cmm.cli.parser;
 
-import com.sean.cmm.cli.BaseCmd;
+import com.sean.cmm.cli.cmd.BaseCmd;
 
 import java.util.Map;
 
