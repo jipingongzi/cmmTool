@@ -1,38 +1,87 @@
 package com.sean.cmm.plugin.elevator;
-
 import java.util.PriorityQueue;
-import java.util.concurrent.CompletableFuture;
+import java.util.Comparator;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 
-public class Elevator {
-    private final LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
-    private final StatusEnum status = StatusEnum.STOPPED;
+public class Elevator implements Runnable {
+    private PriorityQueue<Integer> upTasks;
+    private PriorityQueue<Integer> downTasks;
+    private LinkedBlockingQueue<Integer> newTasks;
+    private int currentFloor;
+    private boolean isMovingUp;
+    private boolean isMovingDown;
 
-    public void click(Integer floor){
-        if(queue.contains(floor)){
-            return;
-        }
-
+    public Elevator(int startingFloor) {
+        upTasks = new PriorityQueue<>();
+        downTasks = new PriorityQueue<>(Comparator.reverseOrder());
+        this.newTasks = new LinkedBlockingQueue<>();
+        this.currentFloor = startingFloor;
     }
 
+    public void addTask(int floor) {
+        try {
+            if (!newTasks.contains(floor)) {
+                newTasks.put(floor);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                while (!newTasks.isEmpty()) {
+                    int nextTask = newTasks.poll();
+                    if (nextTask > currentFloor) {
+                        upTasks.offer(nextTask);
+                    } else if (nextTask < currentFloor) {
+                        downTasks.offer(nextTask);
+                    }
+                }
+
+                isMovingUp = !upTasks.isEmpty();
+                isMovingDown = !isMovingUp && !downTasks.isEmpty();
+
+                if (isMovingUp) {
+                    currentFloor = upTasks.poll();
+                    System.out.println("Elevator moving up, now at floor: " + currentFloor);
+                    Thread.sleep(1000); // 模拟运行耗时
+                }
+
+                if (isMovingDown) {
+                    currentFloor = downTasks.poll();
+                    System.out.println("Elevator moving down, now at floor: " + currentFloor);
+                    Thread.sleep(1000); // 模拟运行耗时
+                }
+
+                // 检查来自同一方向的任务
+                while (isMovingUp && !upTasks.isEmpty() && upTasks.peek() < currentFloor) {
+                    newTasks.offer(upTasks.poll());
+                }
+                while (isMovingDown && !downTasks.isEmpty() && downTasks.peek() > currentFloor) {
+                    newTasks.offer(downTasks.poll());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public static void main(String[] args) throws InterruptedException {
-        PriorityBlockingQueue<Integer> queue = new PriorityBlockingQueue<>();
-        for (int i = 0; i < 100; i++) {
-            int n = i;
-            CompletableFuture.runAsync(() -> {
+        Elevator elevator = new Elevator(1);
+        Thread elevatorThread = new Thread(elevator);
+        elevatorThread.start(); // 开始电梯线程
 
-                System.out.println("Offer: " + n + "  " + queue.offer(n));
-            });
-        }
-        Thread.sleep(10000);
-        System.out.println(queue.size());
-        System.out.println("--------------");
-
-        int l = queue.size();
-        for (int i = 0; i < l; i++) {
-            System.out.println("take: " + queue.take());
-        }
-
+        elevator.addTask(3);
+        elevator.addTask(5);
+        elevator.addTask(2);
+        elevator.addTask(4);
+        // 需要时继续添加更多任务
+        elevator.addTask(2);
+        Thread.sleep(3000);
+        elevator.addTask(2);
+        Thread.sleep(13000);
+        elevator.addTask(10);
     }
 }

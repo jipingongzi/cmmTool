@@ -4,27 +4,27 @@ public class Config {
     /**
      * seconds
      */
-    private final Integer speed = 3;
+    private final static Integer speed = 3;
     /**
      * seconds
      */
-    private final Integer stopTime = 3;
-    private final Integer highestFloor = 10;
-    private final Integer initFloor = 10;
+    private final static Integer stopTime = 3;
+    private final static Integer highestFloor = 10;
+    private final static Integer initFloor = 10;
 
-    public Integer getSpeed() {
+    public static Integer getSpeed() {
         return speed;
     }
 
-    public Integer getStopTime() {
+    public static Integer getStopTime() {
         return stopTime;
     }
 
-    public Integer getHighestFloor() {
+    public static Integer getHighestFloor() {
         return highestFloor;
     }
 
-    public Integer getInitFloor() {
+    public static Integer getInitFloor() {
         return initFloor;
     }
 }
