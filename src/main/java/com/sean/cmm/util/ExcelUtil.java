@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author seanx
  */
-public class ExcelUtil {
+public final class ExcelUtil {
     public static void excelResponse(Workbook wb, HttpServletResponse response, String fileName) throws IOException {
         // 为什么使用 ISO8859-1 编码，这个主要是由于http协议，http header头要求其内容必须为iso8859-1编码,所以我们最终要把其编码为 ISO8859-1 编码的字符串.
         // 但是前面为什么不直接使用 "中文文件名".getBytes("ISO8859-1"); 这样的代码呢?因为ISO8859-1编码的编码表中，根本就没有包含汉字字符，

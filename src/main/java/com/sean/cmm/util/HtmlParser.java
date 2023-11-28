@@ -2,7 +2,7 @@ package com.sean.cmm.util;
 
 import java.util.List;
 
-public class HtmlParser {
+public final class HtmlParser {
 
     public static String getElementData(String id){
         return "";

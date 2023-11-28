@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class WordReader {
+public final class WordReader {
 
     public static void read(String filePath) {
         try {
