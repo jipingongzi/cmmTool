@@ -1,6 +1,7 @@
 package com.sean.cmm.plugin;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Gomoku {
     public static final int BOARD_SIZE = 15;

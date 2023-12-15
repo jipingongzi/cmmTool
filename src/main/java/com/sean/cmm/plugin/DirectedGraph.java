@@ -1,6 +1,9 @@
 package com.sean.cmm.plugin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class DirectedGraph {
     private int vertices; // 顶点数量
