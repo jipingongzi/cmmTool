@@ -34,7 +34,7 @@ public class ListFiles {
         }
     }
 
-    private String parseFileName(String originalFileName){
+    private String parseFileName(String originalFileName) {
         return "";
     }
 }

@@ -30,7 +30,7 @@ public class StreamingPlayer extends Application {
     private Tooltip progressTooltip;
 
 
-    public StreamingPlayer(final String url){
+    public StreamingPlayer(final String url) {
         MEDIA_URL = url;
     }
 
