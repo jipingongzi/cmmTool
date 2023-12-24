@@ -4,17 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xc.investigation.base.repo.entity.exam.ExamPaperInstanceEntity;
 import xc.investigation.base.repo.entity.exam.ExamQuestionInstanceEntity;
-import xc.investigation.base.repo.jpa.exam.ExamBatchJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperInstanceFileJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperInstanceJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperQuestionOptionTreeJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperQuestionTreeJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionInstanceFileJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionInstanceJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionOptionJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamUserMappingJpaRepo;
+import xc.investigation.base.repo.jpa.exam.*;
 
 import java.util.List;
 
@@ -56,7 +46,7 @@ public class ExamForUserDomainService {
         this.examForCommonDomainService = examForCommonDomainService;
     }
 
-    public void completePaper(Long userId,Long paperInstanceId){
+    public void completePaper(Long userId, Long paperInstanceId) {
         ExamPaperInstanceEntity paperInstanceEntity = examForCommonDomainService.findPaperInstance(paperInstanceId);
         List<ExamQuestionInstanceEntity> questionInstanceEntityList = questionInstanceJpaRepo.findByPaperInstanceId(paperInstanceId);
         paperInstanceEntity.complete(userId,
@@ -65,7 +55,7 @@ public class ExamForUserDomainService {
         paperInstanceJpaRepo.save(paperInstanceEntity);
     }
 
-    public void submitPaper(Long userId,Long paperInstanceId){
+    public void submitPaper(Long userId, Long paperInstanceId) {
         ExamPaperInstanceEntity paperInstanceEntity = examForCommonDomainService.findPaperInstance(paperInstanceId);
         paperInstanceEntity.submit(userId);
         paperInstanceJpaRepo.save(paperInstanceEntity);
