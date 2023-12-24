@@ -33,28 +33,28 @@ public class SysQueryService {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public Page<SysAdminDto> findAdminPage(Integer pageNo,Integer pageSize,String bankCode,String name){
+    public Page<SysAdminDto> findAdminPage(Integer pageNo, Integer pageSize, String bankCode, String name) {
         QBankEntity qBankEntity = QBankEntity.bankEntity;
         QSysAdminEntity qSysAdminEntity = QSysAdminEntity.sysAdminEntity;
 
         List<Predicate> whereList = new ArrayList<>();
-        if(StringUtils.hasText(bankCode)) {
+        if (StringUtils.hasText(bankCode)) {
             whereList.add(qSysAdminEntity.bankCode.like(bankCode + "%"));
         }
-        if(StringUtils.hasText(name)) {
+        if (StringUtils.hasText(name)) {
             whereList.add(qSysAdminEntity.name.like("%" + name + "%"));
         }
         Predicate[] predicates = whereList.toArray(new Predicate[0]);
 
         JPAQuery<SysAdminDto> sysAdminDtoJPAQuery = jpaQueryFactory.
                 select(Projections.bean(SysAdminDto.class,
-                                qSysAdminEntity.id,
-                                qSysAdminEntity.name,
-                                qSysAdminEntity.pwd,
-                                qSysAdminEntity.bankCode,
-                                qBankEntity.name.as("bankName"),
-                                qSysAdminEntity.status,
-                                qSysAdminEntity.roleType)
+                        qSysAdminEntity.id,
+                        qSysAdminEntity.name,
+                        qSysAdminEntity.pwd,
+                        qSysAdminEntity.bankCode,
+                        qBankEntity.name.as("bankName"),
+                        qSysAdminEntity.status,
+                        qSysAdminEntity.roleType)
                 )
                 .from(qSysAdminEntity)
                 .join(qBankEntity).on(qSysAdminEntity.bankCode.eq(qBankEntity.code))
@@ -64,6 +64,6 @@ public class SysQueryService {
                 .limit(pageSize);
         List<SysAdminDto> content = sysAdminDtoJPAQuery.fetch();
         Long total = sysAdminDtoJPAQuery.fetchCount();
-        return PageUtil.pageData(content,pageNo,pageSize,total);
+        return PageUtil.pageData(content, pageNo, pageSize, total);
     }
 }

@@ -13,66 +13,20 @@ import xc.investigation.base.config.exception.BizException;
 import xc.investigation.base.constant.domain.ExamPaperInstanceStatus;
 import xc.investigation.base.constant.domain.ExamPaperStatus;
 import xc.investigation.base.constant.domain.ExamQuestionType;
-import xc.investigation.base.dto.ExamInstanceFileDto;
-import xc.investigation.base.dto.ExamMappingCandidateDto;
-import xc.investigation.base.dto.ExamMappingGroupDto;
-import xc.investigation.base.dto.ExamMappingPaperInstanceDto;
-import xc.investigation.base.dto.ExamMappingSpecialUserDto;
-import xc.investigation.base.dto.ExamPaperAnswerDto;
-import xc.investigation.base.dto.ExamPaperDto;
-import xc.investigation.base.dto.ExamPaperInstanceDto;
-import xc.investigation.base.dto.ExamPaperInstanceListDto;
-import xc.investigation.base.dto.ExamPaperListAdminDto;
-import xc.investigation.base.dto.ExamPaperListUserDto;
-import xc.investigation.base.dto.ExamQuestionDto;
-import xc.investigation.base.dto.ExamQuestionInstanceDto;
-import xc.investigation.base.dto.ExamQuestionOptionDto;
+import xc.investigation.base.dto.*;
 import xc.investigation.base.repo.entity.bank.BankEntity;
 import xc.investigation.base.repo.entity.bank.QBankEntity;
-import xc.investigation.base.repo.entity.exam.ExamBatchEntity;
-import xc.investigation.base.repo.entity.exam.ExamPaperEntity;
-import xc.investigation.base.repo.entity.exam.ExamPaperInstanceEntity;
-import xc.investigation.base.repo.entity.exam.ExamPaperInstanceFileEntity;
-import xc.investigation.base.repo.entity.exam.ExamPaperQuestionOptionTreeEntity;
-import xc.investigation.base.repo.entity.exam.ExamPaperQuestionTreeEntity;
-import xc.investigation.base.repo.entity.exam.ExamQuestionEntity;
-import xc.investigation.base.repo.entity.exam.ExamQuestionInstanceEntity;
-import xc.investigation.base.repo.entity.exam.ExamQuestionInstanceFileEntity;
-import xc.investigation.base.repo.entity.exam.ExamQuestionOptionEntity;
-import xc.investigation.base.repo.entity.exam.ExamUserGroupMappingEntity;
-import xc.investigation.base.repo.entity.exam.ExamUserMappingEntity;
-import xc.investigation.base.repo.entity.exam.QExamBatchEntity;
-import xc.investigation.base.repo.entity.exam.QExamPaperEntity;
-import xc.investigation.base.repo.entity.exam.QExamPaperInstanceEntity;
-import xc.investigation.base.repo.entity.exam.QExamUserMappingEntity;
+import xc.investigation.base.repo.entity.exam.*;
 import xc.investigation.base.repo.entity.user.QUserEntity;
 import xc.investigation.base.repo.entity.user.UserEntity;
 import xc.investigation.base.repo.jpa.bank.BankJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamBatchJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperInstanceFileJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperInstanceJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperQuestionOptionTreeJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamPaperQuestionTreeJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionInstanceFileJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionInstanceJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamQuestionOptionJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamUserGroupMappingJpaRepo;
-import xc.investigation.base.repo.jpa.exam.ExamUserMappingJpaRepo;
+import xc.investigation.base.repo.jpa.exam.*;
 import xc.investigation.base.repo.jpa.user.UserGroupJpaRepo;
 import xc.investigation.base.repo.jpa.user.UserJpaRepo;
 import xc.investigation.base.utils.PageUtil;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -132,9 +86,9 @@ public class ExamQueryService {
         Optional<ExamBatchEntity> batchEntityOptional = batchJpaRepo.findById(paperEntity.getBatchId());
         Long batchId = null;
         String batchTitle = null;
-        if(batchEntityOptional.isPresent()){
-           batchId = batchEntityOptional.get().getId();
-           batchTitle = batchEntityOptional.get().getTitle();
+        if (batchEntityOptional.isPresent()) {
+            batchId = batchEntityOptional.get().getId();
+            batchTitle = batchEntityOptional.get().getTitle();
         }
 
         List<ExamPaperQuestionTreeEntity> questionTreeEntityList = paperQuestionTreeJpaRepo.findByPaperId(paperId);
@@ -154,15 +108,15 @@ public class ExamQueryService {
                 .collect(Collectors.toMap(ExamQuestionOptionEntity::getId, o -> o));
 
         ExamPaperDto paperDto = new ExamPaperDto(paperEntity.getId(), paperEntity.getTitle(), paperEntity.getDescription(),
-                paperEntity.getPoint(), paperEntity.getQuestionNumber(), paperEntity.getStatus(),batchId,batchTitle);
+                paperEntity.getPoint(), paperEntity.getQuestionNumber(), paperEntity.getStatus(), batchId, batchTitle);
         questionTreeEntityList.forEach(qt -> {
             List<ExamPaperQuestionOptionTreeEntity> optionList = questionOptionMap.get(qt.getId());
             List<ExamQuestionOptionDto> optionDtoList = new ArrayList<>();
-            if(!CollectionUtils.isEmpty(optionList)) {
+            if (!CollectionUtils.isEmpty(optionList)) {
                 optionList.forEach(ot -> {
                     ExamQuestionOptionEntity optionEntity = optionMap.get(ot.getOptionId());
                     optionDtoList.add(new ExamQuestionOptionDto(ot.getOptionId(), ot.getId(), optionEntity.getTitle(),
-                            optionEntity.getCorrectFlag(),ot.getEndFlag(),optionEntity.getPoint(), ot.getNextQuestionTreeId()));
+                            optionEntity.getCorrectFlag(), ot.getEndFlag(), optionEntity.getPoint(), ot.getNextQuestionTreeId()));
                 });
             }
             ExamQuestionEntity questionEntity = questionMap.get(qt.getQuestionId());
@@ -180,57 +134,57 @@ public class ExamQueryService {
         ExamPaperInstanceEntity paperInstanceEntity = paperInstanceEntityOptional.get();
         List<ExamQuestionInstanceEntity> questionInstanceEntityList = questionInstanceJpaRepo.findByPaperInstanceId(paperInstanceId);
 
-        ExamPaperInstanceDto paperInstanceDto = new ExamPaperInstanceDto(paperInstanceId,paperInstanceEntity.getPaperId(),paperInstanceEntity.getUserId(),
-                paperInstanceEntity.getBankCode(),paperInstanceEntity.getStartTime(),paperInstanceEntity.getEndTime(),paperInstanceEntity.getStatus(),
+        ExamPaperInstanceDto paperInstanceDto = new ExamPaperInstanceDto(paperInstanceId, paperInstanceEntity.getPaperId(), paperInstanceEntity.getUserId(),
+                paperInstanceEntity.getBankCode(), paperInstanceEntity.getStartTime(), paperInstanceEntity.getEndTime(), paperInstanceEntity.getStatus(),
                 paperInstanceEntity.getPoint(), paperInstanceEntity.getQuestionNumber());
 
         List<ExamPaperInstanceFileEntity> paperFiles = paperInstanceFileJpaRepo.findByPaperInstanceId(paperInstanceId);
-        if(!CollectionUtils.isEmpty(paperFiles)){
+        if (!CollectionUtils.isEmpty(paperFiles)) {
             paperInstanceDto.setFileList(paperFiles.stream().map(f -> new ExamInstanceFileDto(f.getUrl(),
-            f.getDescription(),f.getType())).collect(Collectors.toList()));
-        }else{
+                    f.getDescription(), f.getType())).collect(Collectors.toList()));
+        } else {
             paperInstanceDto.setFileList(Collections.emptyList());
         }
         List<ExamQuestionInstanceFileEntity> questionFiles = questionInstanceFileJpaRepo.findByQuestionInstanceIdIn(
                 questionInstanceEntityList.stream().map(ExamQuestionInstanceEntity::getId).collect(Collectors.toList()));
 
-        questionInstanceEntityList.forEach(qi ->{
-                List<ExamQuestionInstanceFileEntity> thisQuestionFiles = questionFiles.stream()
-                 .filter(qf -> qf.getQuestionInstanceId().equals(qi.getId()))
-                 .collect(Collectors.toList());
-                List<ExamInstanceFileDto> fileDtos = new ArrayList<>();
-                if(!CollectionUtils.isEmpty(thisQuestionFiles)){
-                    fileDtos = thisQuestionFiles.stream().map(f -> new ExamInstanceFileDto(f.getUrl(),
-                    f.getDescription(),f.getType())).collect(Collectors.toList());
-                }
-                paperInstanceDto.getAnswerList().add(new ExamQuestionInstanceDto(qi.getPaperQuestionTreeId(),
-                qi.getAnswer(),fileDtos));
+        questionInstanceEntityList.forEach(qi -> {
+            List<ExamQuestionInstanceFileEntity> thisQuestionFiles = questionFiles.stream()
+                    .filter(qf -> qf.getQuestionInstanceId().equals(qi.getId()))
+                    .collect(Collectors.toList());
+            List<ExamInstanceFileDto> fileDtos = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(thisQuestionFiles)) {
+                fileDtos = thisQuestionFiles.stream().map(f -> new ExamInstanceFileDto(f.getUrl(),
+                        f.getDescription(), f.getType())).collect(Collectors.toList());
+            }
+            paperInstanceDto.getAnswerList().add(new ExamQuestionInstanceDto(qi.getPaperQuestionTreeId(),
+                    qi.getAnswer(), fileDtos));
         });
 
         return paperInstanceDto;
     }
 
-    public Page<ExamPaperListAdminDto> findPaperPageForAdmin(Integer pageNo, Integer pageSize, String title, Long batchId){
+    public Page<ExamPaperListAdminDto> findPaperPageForAdmin(Integer pageNo, Integer pageSize, String title, Long batchId) {
         QExamBatchEntity qExamBatchEntity = QExamBatchEntity.examBatchEntity;
         QExamPaperEntity qExamPaperEntity = QExamPaperEntity.examPaperEntity;
         List<Predicate> whereList = new ArrayList<>();
-        if(StringUtils.hasText(title)){
+        if (StringUtils.hasText(title)) {
             whereList.add(qExamPaperEntity.title.like("%" + title + "%"));
         }
-        if(batchId != null){
+        if (batchId != null) {
             whereList.add(qExamPaperEntity.batchId.eq(batchId));
         }
         Predicate[] predicates = whereList.toArray(new Predicate[0]);
         JPAQuery<ExamPaperListAdminDto> examPaperListDtoJpaQuery = jpaQueryFactory.
                 select(Projections.bean(ExamPaperListAdminDto.class,
-                                qExamPaperEntity.id,
-                                qExamBatchEntity.id.as("batchId"),
-                                qExamPaperEntity.title,
-                                qExamBatchEntity.title.as("batchTitle"),
-                                qExamPaperEntity.description,
-                                qExamPaperEntity.point,
-                                qExamPaperEntity.questionNumber,
-                                qExamPaperEntity.status)).
+                        qExamPaperEntity.id,
+                        qExamBatchEntity.id.as("batchId"),
+                        qExamPaperEntity.title,
+                        qExamBatchEntity.title.as("batchTitle"),
+                        qExamPaperEntity.description,
+                        qExamPaperEntity.point,
+                        qExamPaperEntity.questionNumber,
+                        qExamPaperEntity.status)).
                 from(qExamPaperEntity).
                 leftJoin(qExamBatchEntity).on(qExamPaperEntity.batchId.eq(qExamBatchEntity.id)).
                 where(predicates).
@@ -239,48 +193,48 @@ public class ExamQueryService {
                 limit(pageSize);
         List<ExamPaperListAdminDto> content = examPaperListDtoJpaQuery.fetch();
         long total = examPaperListDtoJpaQuery.fetchCount();
-        return PageUtil.pageData(content,pageNo,pageSize,total);
+        return PageUtil.pageData(content, pageNo, pageSize, total);
     }
 
     public Page<ExamPaperInstanceListDto> findPaperInstancePage(Integer pageNo, Integer pageSize,
                                                                 Long batchId, Long userId, String paperTitle,
                                                                 String userName, String bankCode,
                                                                 Integer minPoint, Integer maxPoint, ExamPaperInstanceStatus status,
-                                                                LocalDateTime minStartTime,LocalDateTime maxStartTime){
+                                                                LocalDateTime minStartTime, LocalDateTime maxStartTime) {
         QExamPaperEntity qExamPaperEntity = QExamPaperEntity.examPaperEntity;
         QExamPaperInstanceEntity qExamPaperInstanceEntity = QExamPaperInstanceEntity.examPaperInstanceEntity;
         QUserEntity qUserEntity = QUserEntity.userEntity;
         QBankEntity qBankEntity = QBankEntity.bankEntity;
 
         List<Predicate> whereList = new ArrayList<>();
-        if(batchId != null){
+        if (batchId != null) {
             whereList.add(qExamPaperEntity.batchId.eq(batchId));
         }
-        if(userId != null){
+        if (userId != null) {
             whereList.add(qExamPaperInstanceEntity.userId.eq(userId));
         }
-        if(StringUtils.hasText(paperTitle)){
+        if (StringUtils.hasText(paperTitle)) {
             whereList.add(qExamPaperEntity.title.like("%" + paperTitle.trim() + "%"));
         }
-        if(StringUtils.hasText(userName)){
+        if (StringUtils.hasText(userName)) {
             whereList.add(qUserEntity.name.like("%" + userName.trim() + "%"));
         }
-        if(StringUtils.hasText(bankCode)){
+        if (StringUtils.hasText(bankCode)) {
             whereList.add(qExamPaperInstanceEntity.bankCode.like(bankCode + "%"));
         }
-        if(minPoint != null){
+        if (minPoint != null) {
             whereList.add(qExamPaperInstanceEntity.point.goe(minPoint));
         }
-        if(maxPoint != null){
+        if (maxPoint != null) {
             whereList.add(qExamPaperInstanceEntity.point.loe(maxPoint));
         }
-        if(status != null){
+        if (status != null) {
             whereList.add(qExamPaperInstanceEntity.status.eq(status));
         }
-        if(minStartTime != null){
+        if (minStartTime != null) {
             whereList.add(qExamPaperInstanceEntity.startTime.after(minStartTime));
         }
-        if(maxStartTime != null){
+        if (maxStartTime != null) {
             whereList.add(qExamPaperInstanceEntity.startTime.before(maxStartTime));
         }
         Predicate[] predicates = whereList.toArray(new Predicate[0]);
@@ -309,46 +263,46 @@ public class ExamQueryService {
                 .limit(pageSize);
         List<ExamPaperInstanceListDto> content = paperInstanceListDtoJpaQuery.fetch();
         long total = paperInstanceListDtoJpaQuery.fetchCount();
-        return PageUtil.pageData(content,pageNo,pageSize,total);
+        return PageUtil.pageData(content, pageNo, pageSize, total);
     }
 
-    public List<ExamMappingGroupDto> getGroupMapping(Long paperId){
+    public List<ExamMappingGroupDto> getGroupMapping(Long paperId) {
         List<ExamUserGroupMappingEntity> groupMappingEntityList = groupMappingJpaRepo.findByPaperId(paperId);
         List<Long> groupIdList = groupMappingEntityList.stream()
                 .map(ExamUserGroupMappingEntity::getUserGroupId)
                 .collect(Collectors.toList());
         return groupJpaRepo.findAllById(groupIdList).stream()
-                .map(g -> new ExamMappingGroupDto(paperId,g.getId(),g.getTitle()))
+                .map(g -> new ExamMappingGroupDto(paperId, g.getId(), g.getTitle()))
                 .collect(Collectors.toList());
     }
 
-    public List<ExamMappingSpecialUserDto> getSpecialUserMapping(Long paperId){
-        List<ExamUserMappingEntity> userMappingEntityList = userMappingJpaRepo.findByPaperIdAndSpecial(paperId,true);
+    public List<ExamMappingSpecialUserDto> getSpecialUserMapping(Long paperId) {
+        List<ExamUserMappingEntity> userMappingEntityList = userMappingJpaRepo.findByPaperIdAndSpecial(paperId, true);
         List<Long> userIdList = userMappingEntityList.stream()
                 .map(ExamUserMappingEntity::getUserId)
                 .collect(Collectors.toList());
         return userJpaRepo.findAllById(userIdList).stream()
-                .map(u -> new ExamMappingSpecialUserDto(paperId,u.getId(),u.getName()))
+                .map(u -> new ExamMappingSpecialUserDto(paperId, u.getId(), u.getName()))
                 .collect(Collectors.toList());
     }
 
-    public List<ExamMappingCandidateDto> getCandidateForMapping(Long paperId,String userName){
+    public List<ExamMappingCandidateDto> getCandidateForMapping(Long paperId, String userName) {
         List<Long> oldMappingUserIdList = userMappingJpaRepo.findByPaperId(paperId).stream()
                 .map(ExamUserMappingEntity::getUserId)
                 .collect(Collectors.toList());
-        if(StringUtils.hasText(userName)){
+        if (StringUtils.hasText(userName)) {
             userName = "%" + userName + "%";
-        }else {
+        } else {
             userName = "%%";
         }
         List<UserEntity> userEntityList = userJpaRepo.findByNameLike(userName);
-        return  userEntityList.stream()
+        return userEntityList.stream()
                 .filter(u -> !oldMappingUserIdList.contains(u.getId()))
-                .map(u -> new ExamMappingCandidateDto(u.getName(),u.getIdNo(),u.getId()))
+                .map(u -> new ExamMappingCandidateDto(u.getName(), u.getIdNo(), u.getId()))
                 .collect(Collectors.toList());
     }
 
-    public List<ExamMappingPaperInstanceDto> getPaperInstanceMapping(Long paperId){
+    public List<ExamMappingPaperInstanceDto> getPaperInstanceMapping(Long paperId) {
         QExamPaperEntity qExamPaperEntity = QExamPaperEntity.examPaperEntity;
         QExamUserMappingEntity qExamUserMappingEntity = QExamUserMappingEntity.examUserMappingEntity;
         QUserEntity qUserEntity = QUserEntity.userEntity;
@@ -384,16 +338,16 @@ public class ExamQueryService {
         return userMappingQuery.fetch();
     }
 
-    public Page<ExamBatchEntity> findBatchList(String title,Integer pageNo,Integer pageSize){
-        if(!StringUtils.hasText(title)){
+    public Page<ExamBatchEntity> findBatchList(String title, Integer pageNo, Integer pageSize) {
+        if (!StringUtils.hasText(title)) {
             title = "%%";
-        }else {
+        } else {
             title = "%" + title + "%";
         }
-        return batchJpaRepo.findByTitleLike(title, PageRequest.of(pageNo,pageSize));
+        return batchJpaRepo.findByTitleLike(title, PageRequest.of(pageNo, pageSize));
     }
 
-    public List<ExamPaperListUserDto> findPaperPageForUser(Long batchId,Long userId){
+    public List<ExamPaperListUserDto> findPaperPageForUser(Long batchId, Long userId) {
         List<ExamPaperEntity> paperEntityList = paperJpaRepo.findByBatchIdAndStatusIn(batchId, Collections.singletonList(ExamPaperStatus.ENABLE));
         List<ExamUserMappingEntity> userMappingEntityList = userMappingJpaRepo.findByUserId(userId);
         List<Long> userPaperIdList = userMappingEntityList.stream().map(ExamUserMappingEntity::getPaperId).collect(Collectors.toList());
@@ -402,15 +356,15 @@ public class ExamQueryService {
         List<ExamPaperListUserDto> paperListUserDtoList = new ArrayList<>();
         userPaperEntityList.forEach(p -> {
             List<String> hasInstanceStrList = new ArrayList<>();
-            List<ExamPaperInstanceEntity> paperInstanceEntityList = paperInstanceJpaRepo.findByPaperIdAndUserId(p.getId(),userId);
-            if(!CollectionUtils.isEmpty(paperInstanceEntityList)){
-                Map<ExamPaperInstanceStatus,Integer> instanceStatusNumberMap = new HashMap<>(paperInstanceEntityList.size());
+            List<ExamPaperInstanceEntity> paperInstanceEntityList = paperInstanceJpaRepo.findByPaperIdAndUserId(p.getId(), userId);
+            if (!CollectionUtils.isEmpty(paperInstanceEntityList)) {
+                Map<ExamPaperInstanceStatus, Integer> instanceStatusNumberMap = new HashMap<>(paperInstanceEntityList.size());
                 paperInstanceEntityList.forEach(pi -> {
                     ExamPaperInstanceStatus status = pi.getStatus();
-                    if(!instanceStatusNumberMap.containsKey(status)){
-                        instanceStatusNumberMap.put(status,1);
-                    }else {
-                        instanceStatusNumberMap.put(status,instanceStatusNumberMap.get(status) + 1);
+                    if (!instanceStatusNumberMap.containsKey(status)) {
+                        instanceStatusNumberMap.put(status, 1);
+                    } else {
+                        instanceStatusNumberMap.put(status, instanceStatusNumberMap.get(status) + 1);
                     }
                 });
                 instanceStatusNumberMap.forEach((key, number) -> {
@@ -420,34 +374,35 @@ public class ExamQueryService {
                     hasInstanceStrList.add(hasInstanceStr.toString());
                 });
             }
-            paperListUserDtoList.add(new ExamPaperListUserDto(p.getId(),p.getTitle(),hasInstanceStrList));
+            paperListUserDtoList.add(new ExamPaperListUserDto(p.getId(), p.getTitle(), hasInstanceStrList));
         });
         return paperListUserDtoList;
     }
 
-    public List<ExamPaperInstanceListDto> findPaperInstanceListDtoByUserId(Long userId){
+    public List<ExamPaperInstanceListDto> findPaperInstanceListDtoByUserId(Long userId) {
         return buildPaperInstanceListDto(paperInstanceJpaRepo.findByUserIdOrderByCreateTimeDesc(userId));
     }
-    public List<ExamPaperInstanceListDto> findPaperInstanceListDtoByBankId(Long bankId){
+
+    public List<ExamPaperInstanceListDto> findPaperInstanceListDtoByBankId(Long bankId) {
         Optional<BankEntity> bankEntityOptional = bankJpaRepo.findById(bankId);
         return bankEntityOptional.map(bankEntity -> buildPaperInstanceListDto(
                 paperInstanceJpaRepo.findByBankCodeOrderByCreateTimeDesc(bankEntity.getCode()))).orElseGet(ArrayList::new);
     }
 
-    public ExamQuestionEntity findQuestionByQuestionTreeId(Long questionTreeId){
+    public ExamQuestionEntity findQuestionByQuestionTreeId(Long questionTreeId) {
         Optional<ExamPaperQuestionTreeEntity> questionTreeEntityOptional = paperQuestionTreeJpaRepo.findById(questionTreeId);
-        if(!questionTreeEntityOptional.isPresent()){
+        if (!questionTreeEntityOptional.isPresent()) {
             throw new BizException("问题在问卷中不存在");
         }
         Optional<ExamQuestionEntity> questionEntityOptional =
-         questionJpaRepo.findById(questionTreeEntityOptional.get().getQuestionId());
-        if(!questionEntityOptional.isPresent()){
+                questionJpaRepo.findById(questionTreeEntityOptional.get().getQuestionId());
+        if (!questionEntityOptional.isPresent()) {
             throw new BizException("问题不存在");
         }
         return questionEntityOptional.get();
     }
 
-    public Map<Long,List<ExamPaperAnswerDto>> getAnswer(Long paperId, Collection<Long> paperInstanceIds){
+    public Map<Long, List<ExamPaperAnswerDto>> getAnswer(Long paperId, Collection<Long> paperInstanceIds) {
 
         List<ExamPaperQuestionTreeEntity> questionTreeEntityList = paperQuestionTreeJpaRepo.findByPaperId(paperId);
         List<Long> questionTreeIdList = questionTreeEntityList.stream().map(ExamPaperQuestionTreeEntity::getId).collect(Collectors.toList());
@@ -458,32 +413,32 @@ public class ExamQueryService {
         List<ExamQuestionEntity> questionEntityList = questionJpaRepo.findAllById(questionIdList);
         List<ExamQuestionOptionEntity> optionEntityList = questionOptionJpaRepo.findByQuestionIdIn(questionIdList);
 
-        Map<Long,ExamQuestionEntity> questionTreeMap = new HashMap<>();
+        Map<Long, ExamQuestionEntity> questionTreeMap = new HashMap<>();
         questionTreeEntityList.forEach(qt -> {
             Optional<ExamQuestionEntity> questionEntityOptional = questionEntityList.stream().filter(q -> qt.getQuestionId().equals(q.getId())).findFirst();
-            if(!questionEntityOptional.isPresent()){
+            if (!questionEntityOptional.isPresent()) {
                 return;
             }
-            questionTreeMap.put(qt.getId(),questionEntityOptional.get());
+            questionTreeMap.put(qt.getId(), questionEntityOptional.get());
         });
-        Map<Long,ExamQuestionOptionEntity> optionTreeMap = new HashMap<>();
+        Map<Long, ExamQuestionOptionEntity> optionTreeMap = new HashMap<>();
         optionTreeEntityList.forEach(ot -> {
             Optional<ExamQuestionOptionEntity> optionEntityOptional = optionEntityList.stream().filter(o -> ot.getOptionId().equals(o.getId())).findFirst();
-            if(!optionEntityOptional.isPresent()){
+            if (!optionEntityOptional.isPresent()) {
                 return;
             }
-            optionTreeMap.put(ot.getId(),optionEntityOptional.get());
+            optionTreeMap.put(ot.getId(), optionEntityOptional.get());
         });
 
-        Map<Long,List<ExamPaperAnswerDto>> result = new LinkedHashMap<>();
+        Map<Long, List<ExamPaperAnswerDto>> result = new LinkedHashMap<>();
         List<ExamQuestionInstanceEntity> questionInstanceEntityList = questionInstanceJpaRepo.findByPaperInstanceIdIn(paperInstanceIds);
         questionInstanceEntityList.forEach(qi -> {
 
             ExamQuestionEntity questionEntity = questionTreeMap.get(qi.getPaperQuestionTreeId());
             String answerText = "";
-            if(ExamQuestionType.INPUT.equals(questionEntity.getType())){
+            if (ExamQuestionType.INPUT.equals(questionEntity.getType())) {
                 answerText = qi.getAnswer();
-            }else if(ExamQuestionType.MULTIPLE_CHOICE.equals(questionEntity.getType())){
+            } else if (ExamQuestionType.MULTIPLE_CHOICE.equals(questionEntity.getType())) {
                 String[] optionTreeIds = qi.getAnswer().split(",");
                 for (String optionTreeId : optionTreeIds) {
                     if (StringUtils.hasText(answerText)) {
@@ -492,35 +447,35 @@ public class ExamQueryService {
                         answerText = optionTreeMap.get(Long.parseLong(optionTreeId)).getTitle();
                     }
                 }
-            }else {
+            } else {
                 answerText = optionTreeMap.get(Long.parseLong(qi.getAnswer())).getTitle();
             }
 
-            if(result.containsKey(qi.getPaperInstanceId())){
+            if (result.containsKey(qi.getPaperInstanceId())) {
                 List<ExamPaperAnswerDto> answers = result.get(qi.getPaperInstanceId());
-                answers.add(new ExamPaperAnswerDto(qi.getId(),questionEntity.getTitle(),qi.getAnswer(),answerText));
-            }else {
+                answers.add(new ExamPaperAnswerDto(qi.getId(), questionEntity.getTitle(), qi.getAnswer(), answerText));
+            } else {
                 List<ExamPaperAnswerDto> answers = new ArrayList<>();
-                answers.add(new ExamPaperAnswerDto(qi.getId(),questionEntity.getTitle(), qi.getAnswer(), answerText));
-                result.put(qi.getPaperInstanceId(),answers );
+                answers.add(new ExamPaperAnswerDto(qi.getId(), questionEntity.getTitle(), qi.getAnswer(), answerText));
+                result.put(qi.getPaperInstanceId(), answers);
             }
         });
         return result;
     }
 
-    private List<ExamPaperInstanceListDto> buildPaperInstanceListDto(List<ExamPaperInstanceEntity> paperInstanceEntityList){
+    private List<ExamPaperInstanceListDto> buildPaperInstanceListDto(List<ExamPaperInstanceEntity> paperInstanceEntityList) {
 
         Map<String, BankEntity> bankMap = bankJpaRepo.findByCodeIn(paperInstanceEntityList.stream()
-                .map(ExamPaperInstanceEntity::getBankCode).collect(Collectors.toList()))
-                .stream().collect(Collectors.toMap(BankEntity::getCode,b -> b));
+                        .map(ExamPaperInstanceEntity::getBankCode).collect(Collectors.toList()))
+                .stream().collect(Collectors.toMap(BankEntity::getCode, b -> b));
 
         Map<Long, ExamPaperEntity> paperMap = paperJpaRepo.findAllById(paperInstanceEntityList.stream()
-                .map(ExamPaperInstanceEntity::getPaperId).collect(Collectors.toList()))
-                .stream().collect(Collectors.toMap(ExamPaperEntity::getId,p -> p));
+                        .map(ExamPaperInstanceEntity::getPaperId).collect(Collectors.toList()))
+                .stream().collect(Collectors.toMap(ExamPaperEntity::getId, p -> p));
 
         Map<Long, UserEntity> uerMap = userJpaRepo.findAllById(paperInstanceEntityList.stream()
-                .map(ExamPaperInstanceEntity::getUserId).collect(Collectors.toList()))
-                .stream().collect(Collectors.toMap(UserEntity::getId,u -> u));
+                        .map(ExamPaperInstanceEntity::getUserId).collect(Collectors.toList()))
+                .stream().collect(Collectors.toMap(UserEntity::getId, u -> u));
 
         List<ExamPaperInstanceListDto> paperInstanceListDtoList = new ArrayList<>();
 
@@ -528,27 +483,27 @@ public class ExamQueryService {
                 paperMap.get(pi.getPaperId()).getTitle(),
                 uerMap.get(pi.getUserId()).getName(),
                 bankMap.get(pi.getBankCode()).getName(),
-                pi.getStartTime(),pi.getEndTime(),pi.getStatus(),pi.getPoint(),pi.getQuestionNumber())));
+                pi.getStartTime(), pi.getEndTime(), pi.getStatus(), pi.getPoint(), pi.getQuestionNumber())));
 
         return paperInstanceListDtoList;
     }
 
-    private String convertExamPaperInstanceStatusToStr(ExamPaperInstanceStatus status){
+    private String convertExamPaperInstanceStatusToStr(ExamPaperInstanceStatus status) {
         String text = "";
-        switch (status){
-            case IN_PROGRESS :
+        switch (status) {
+            case IN_PROGRESS:
                 text = "进行中";
                 break;
-            case COMPLETE :
+            case COMPLETE:
                 text = "已完成";
                 break;
-            case SUBMIT :
+            case SUBMIT:
                 text = "已提交";
                 break;
-            case AUDIT_FAIL :
+            case AUDIT_FAIL:
                 text = "审核失败";
                 break;
-            case AUDIT_SUCCESS :
+            case AUDIT_SUCCESS:
                 text = "审核成功";
                 break;
             default:

@@ -32,34 +32,34 @@ public class BankQueryService {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<BankEntity> findTopBank(){
+    public List<BankEntity> findTopBank() {
         return bankJpaRepo.findRootBank();
     }
 
-    public BankDto findBankDto(Long bankId){
+    public BankDto findBankDto(Long bankId) {
         Optional<BankEntity> bankEntityOptional = bankJpaRepo.findById(bankId);
-        if(!bankEntityOptional.isPresent()){
+        if (!bankEntityOptional.isPresent()) {
             throw new BizException("银行不存在");
         }
         BankEntity bankEntity = bankEntityOptional.get();
-        return new BankDto(bankEntity.getId(),bankEntity.getName(),bankEntity.getCode(),
-                bankEntity.getManagerName(),bankEntity.getManagerPhone(),
-                bankEntity.getRoot(),bankEntity.getLeaf());
+        return new BankDto(bankEntity.getId(), bankEntity.getName(), bankEntity.getCode(),
+                bankEntity.getManagerName(), bankEntity.getManagerPhone(),
+                bankEntity.getRoot(), bankEntity.getLeaf());
     }
 
-    public Page<BankDto> findBankPage(Integer pageNo, Integer pageSize, String code, String name, Boolean root, Boolean leaf){
+    public Page<BankDto> findBankPage(Integer pageNo, Integer pageSize, String code, String name, Boolean root, Boolean leaf) {
         QBankEntity qBankEntity = QBankEntity.bankEntity;
         List<Predicate> whereList = new ArrayList<>();
-        if(StringUtils.hasText(code)){
+        if (StringUtils.hasText(code)) {
             whereList.add(qBankEntity.code.like(code + "%"));
         }
-        if(StringUtils.hasText(name)){
+        if (StringUtils.hasText(name)) {
             whereList.add(qBankEntity.name.like("%" + name + "%"));
         }
-        if(root != null){
+        if (root != null) {
             whereList.add(qBankEntity.root.eq(root));
         }
-        if(leaf != null){
+        if (leaf != null) {
             whereList.add(qBankEntity.leaf.eq(leaf));
         }
         Predicate[] predicates = whereList.toArray(new Predicate[0]);
@@ -79,6 +79,6 @@ public class BankQueryService {
                 limit(pageSize);
         List<BankDto> content = bankDtoJPAQuery.fetch();
         long total = bankDtoJPAQuery.fetchCount();
-        return PageUtil.pageData(content,pageNo,pageSize,total);
+        return PageUtil.pageData(content, pageNo, pageSize, total);
     }
 }
