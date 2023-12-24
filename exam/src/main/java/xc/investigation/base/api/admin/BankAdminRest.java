@@ -1,6 +1,6 @@
 package xc.investigation.base.api.admin;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.langStr.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,11 +1,11 @@
 package xc.investigation.base.init;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author ibm
@@ -14,7 +14,7 @@ public class BankSpider {
 
     public static void main(String[] args) throws IOException {
         Document doc =
-         Jsoup.connect("https://www.cardbaobao.com/wangdian/gongshang/sichuan/?page=1").maxBodySize(0).get();
+                Jsoup.connect("https://www.cardbaobao.com/wangdian/gongshang/sichuan/?page=1").maxBodySize(0).get();
         String title = doc.title();
         System.out.println(title);
 
@@ -34,9 +34,9 @@ public class BankSpider {
     }
 
     private static void parasePage(int pageNumber) throws IOException {
-        System.out.println("========================第"+pageNumber+"页数据：===============================");
+        System.out.println("========================第" + pageNumber + "页数据：===============================");
         Document doc = Jsoup.connect("https://www.cardbaobao.com/wangdian/gongshang/sichuan/?page=" + pageNumber)
-         .maxBodySize(0).get();
+                .maxBodySize(0).get();
         List<Element> data = doc.getElementsByTag("dd");
         for (Element e : data) {
             String bank = e.getElementsByClass("taa1").get(0).text();
