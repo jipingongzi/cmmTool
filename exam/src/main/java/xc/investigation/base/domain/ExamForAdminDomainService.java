@@ -486,8 +486,8 @@ public class ExamForAdminDomainService {
         }
         Collection<Long> specialUserIdList = new ArrayList<>(userIdList);
         if (!CollectionUtils.isEmpty(groupIdList)) {
-            for (int i = 0; i < groupIdList.size(); i++) {
-                userIdList.addAll(userQueryService.findUserPage(0, Integer.MAX_VALUE, groupIdList.get(i), "")
+            for (Long aLong : groupIdList) {
+                userIdList.addAll(userQueryService.findUserPage(0, Integer.MAX_VALUE, aLong, "")
                         .getContent().stream().map(UserDto::getId).collect(Collectors.toList()));
             }
         }
