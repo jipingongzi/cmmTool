@@ -7,6 +7,6 @@ import java.util.List;
 public class MultipleOptionStrategy extends JudgeStrategy{
     @Override
     protected Boolean subJudge(ExamQuestionDto question, List<String> userAnswer) {
-        return null;
+        return userAnswer.contains(question.getTitle());
     }
 }
