@@ -2,7 +2,7 @@ package xc.investigation.base.config.mvc.interceptor;
 
 import cn.hutool.crypto.digest.MD5;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import xc.investigation.base.config.exception.SystemException;
