@@ -10,6 +10,7 @@ import java.util.Optional;
 
 /**
  * 证书查询
+ *
  * @author seanx
  */
 @Service
@@ -23,16 +24,17 @@ public class CertificateQueryService {
         this.certificateJpaRepo = certificateJpaRepo;
     }
 
-    public Optional<CertificateEntity> get(int certificateId){
+    public Optional<CertificateEntity> get(int certificateId) {
         return certificateJpaRepo.findById(certificateId);
     }
-    public int getCertificateId(String userIdNo){
+
+    public int getCertificateId(String userIdNo) {
         Optional<CertificateExamEntity> examEntityOptional = certificateExamJpaRepo.findByCurrent(true);
-        if(!examEntityOptional.isPresent()){
+        if (!examEntityOptional.isPresent()) {
             return -1;
         }
         CertificateExamEntity certificateExamEntity = examEntityOptional.get();
-        Optional<CertificateEntity> certificateEntityOptional = certificateJpaRepo.findByUserIdNoAndExamId(userIdNo,certificateExamEntity.getId());
+        Optional<CertificateEntity> certificateEntityOptional = certificateJpaRepo.findByUserIdNoAndExamId(userIdNo, certificateExamEntity.getId());
         return certificateEntityOptional.map(CertificateEntity::getId).orElse(-1);
     }
 }

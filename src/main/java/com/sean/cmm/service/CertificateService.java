@@ -19,6 +19,7 @@ import java.util.Optional;
 
 /**
  * 证书业务
+ *
  * @author seanx
  */
 @Service
@@ -38,16 +39,16 @@ public class CertificateService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void saveCertificate(List<CertificateResultDto> certificateDtoList){
+    public void saveCertificate(List<CertificateResultDto> certificateDtoList) {
         Optional<CertificateExamEntity> examEntityOptional = certificateExamJpaRepo.findByCurrent(true);
-        if(!examEntityOptional.isPresent()){
+        if (!examEntityOptional.isPresent()) {
             throw new RuntimeException("当前无认证测验");
         }
         CertificateExamEntity certificateExamEntity = examEntityOptional.get();
 
         certificateDtoList.forEach(dto -> {
             Optional<CertificateEntity> oldCertificateEntityOptional = certificateJpaRepo.findByUserIdNoAndExamId(dto.getUserIdNo(), certificateExamEntity.getId());
-            if(oldCertificateEntityOptional.isPresent()){
+            if (oldCertificateEntityOptional.isPresent()) {
                 CertificateEntity certificate = oldCertificateEntityOptional.get();
                 certificate.update(dto.getUserName(), dto.getUserArea(), dto.getUserBankInfo(),
                         dto.getExamStartTime(), dto.getExamSuccessTime(), dto.getTotalScore());
@@ -64,9 +65,9 @@ public class CertificateService {
         });
     }
 
-    private String generateCode(CertificateResultDto dto,int currentExamId){
+    private String generateCode(CertificateResultDto dto, int currentExamId) {
         String sql = "select count(*) as flag from t_certificate where user_area = ? and exam_id = ?";
-        List<Map<String,Object>> resultSet = jdbcTemplate.queryForList(sql,dto.getUserArea(),currentExamId);
+        List<Map<String, Object>> resultSet = jdbcTemplate.queryForList(sql, dto.getUserArea(), currentExamId);
         int dbLocation = Integer.parseInt(resultSet.get(0).get("flag").toString());
         int currentLocation = dbLocation + 1;
 
