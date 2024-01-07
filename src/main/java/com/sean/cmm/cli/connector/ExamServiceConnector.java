@@ -25,6 +25,5 @@ public class ExamServiceConnector implements ICmdConnector {
         }
         ldapService.authenticate(url, username, pwd);
         return true;
-
     }
 }
